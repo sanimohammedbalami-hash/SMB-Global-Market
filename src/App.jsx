@@ -10,8 +10,8 @@ export default function App() {
     <Router>
       <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
         <Routes>
-          <Route path="/splash" element={<SplashScreen />} />
-          <Route path="/" element={<><Header /><Home /><BottomNav /></>} />
+          <Route path="/" element={<SplashScreen />} />
+          <Route path="/home" element={<><Header /><Home /><BottomNav /></>} />
         </Routes>
       </div>
     </Router>
