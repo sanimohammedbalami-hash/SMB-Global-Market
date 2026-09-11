@@ -11,11 +11,12 @@ import CheckoutPage from './pages/CheckoutPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrdersPage from './pages/OrdersPage';
 import SearchPage from './pages/SearchPage';
+import WishlistPage from './pages/WishlistPage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
   const [lang, setLang] = useState('en');
-  const [user, setUser] = useState({ name: 'Customer' });
+  const [user, setUser] = useState({ name: 'Sani Achibu' });
 
   useEffect(() => {
     if (currentScreen === 'splash') {
@@ -57,6 +58,8 @@ function App() {
         return <OrdersPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'search':
         return <SearchPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'wishlist':
+        return <WishlistPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;

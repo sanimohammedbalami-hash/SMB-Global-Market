@@ -1,16 +1,16 @@
 import React from 'react';
 
 function AccountPage({ onNavigate, lang, setLang, user }) {
-  const userName = user && user.name ? user.name : 'Customer';
+  const userName = user && user.name ? user.name : 'Sani Achibu';
 
   const content = {
     en: {
       title: 'My Profile',
       greeting: `Hello, ${userName}`,
       myOrders: 'My Orders',
+      wishlist: 'My Wishlist',
       shippingAddress: 'Shipping Address',
       paymentMethods: 'Payment Methods',
-      language: 'Language / Harshe',
       support: 'Customer Support',
       logout: 'Log Out'
     },
@@ -18,9 +18,9 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
       title: 'Asusun Nawa',
       greeting: `Barka, ${userName}`,
       myOrders: 'Ododina na Baya',
+      wishlist: 'Abubuwan Sha\'awa',
       shippingAddress: 'Adireshin Isar da Saƙo',
       paymentMethods: 'Hanyoyin Biya',
-      language: 'Harshe / Language',
       support: 'Taimakon Abokan Ciniki',
       logout: 'Fita daga Asusun'
     }
@@ -48,7 +48,7 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
           </div>
           <div>
             <h2 className="font-bold text-sm text-gray-900">{t.greeting}</h2>
-            <p className="text-[11px] text-gray-500">customer@smbglobalmarket.com</p>
+            <p className="text-[11px] text-gray-500">sani@smbglobalmarket.com</p>
           </div>
         </div>
 
@@ -61,6 +61,17 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
             <div className="flex items-center space-x-3">
               <span className="text-lg">📦</span>
               <span className="text-xs font-bold text-gray-800">{t.myOrders}</span>
+            </div>
+            <span className="text-gray-400 text-xs">›</span>
+          </div>
+
+          <div 
+            onClick={() => onNavigate && onNavigate('wishlist')}
+            className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+          >
+            <div className="flex items-center space-x-3">
+              <span className="text-lg">❤️</span>
+              <span className="text-xs font-bold text-gray-800">{t.wishlist}</span>
             </div>
             <span className="text-gray-400 text-xs">›</span>
           </div>
