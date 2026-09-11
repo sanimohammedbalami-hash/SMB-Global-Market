@@ -6,6 +6,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
   const [address, setAddress] = useState({
     fullName: userName,
     phone: '',
+    email: 'customer@smbglobalmarket.com',
     city: 'Kano',
     streetAddress: ''
   });
@@ -16,6 +17,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
       shippingTitle: 'Shipping Address',
       fullName: 'Full Name',
       phone: 'Phone Number',
+      email: 'Email Address',
       city: 'City / State',
       street: 'Street Address',
       paymentTitle: 'Payment Method',
@@ -33,6 +35,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
       shippingTitle: 'Adireshin Isar da Saƙo',
       fullName: 'Cikakken Suna',
       phone: 'Lambar Waya',
+      email: 'Adireshin Imel',
       city: 'Bayanin Garin',
       street: 'Adireshin Gida ko Kanti',
       paymentTitle: 'Hanyar Biya',
@@ -49,10 +52,31 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
 
   const t = content[lang] || content.en;
 
+  const payWithPaystack = () => {
+    if (window.PaystackPop) {
+      const handler = window.PaystackPop.setup({
+        key: 'pk_test_PUBLIC_KEY_HERE', // Nan za a saka Public Key dinka na Paystack
+        email: address.email,
+        amount: 337000 * 100, // Paystack yana lissafi a kobo (₦337,000 * 100)
+        currency: 'NGN',
+        ref: 'SMB_' + Math.floor(Math.random() * 1000000000 + 1),
+        callback: function(response) {
+          alert(lang === 'ha' ? 'An amshi biyan kuɗinku cikin nasara! Ref: ' + response.reference : 'Payment successful! Reference: ' + response.reference);
+        },
+        onClose: function() {
+          alert(lang === 'ha' ? 'Kuka soke yin biyan kuɗin.' : 'Payment window closed.');
+        }
+      });
+      handler.openIframe();
+    } else {
+      alert(lang === 'ha' ? 'Hanyar Paystack ba ta buɗe ba. Sake gwadawa.' : 'Paystack inline script not loaded.');
+    }
+  };
+
   const handleOrder = (e) => {
     e.preventDefault();
     if (paymentMethod === 'card') {
-      alert(lang === 'ha' ? 'Saitin Paystack yana kan haɗawa...' : 'Connecting to Paystack gateway...');
+      payWithPaystack();
     } else {
       const message = `Hello SMB Global Market! I want to pay via Bank Transfer:%0A- Name: ${address.fullName}%0A- Phone: ${address.phone}%0A- Location: ${address.streetAddress}, ${address.city}%0A- Total Amount: ₦337,000`;
       window.open(`https://wa.me/?text=${message}`, '_blank');
@@ -101,6 +125,18 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
               placeholder="08012345678"
               value={address.phone}
               onChange={(e) => setAddress({ ...address, phone: e.target.value })}
+              className="w-full p-2.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-700"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-medium text-gray-600 mb-1">{t.email}</label>
+            <input
+              type="email"
+              required
+              placeholder="example@gmail.com"
+              value={address.email}
+              onChange={(e) => setAddress({ ...address, email: e.target.value })}
               className="w-full p-2.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-700"
             />
           </div>
