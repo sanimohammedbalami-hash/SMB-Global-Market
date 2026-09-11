@@ -3,45 +3,98 @@ import React from 'react';
 function AccountPage({ onNavigate, lang, setLang, user }) {
   const userName = user && user.name ? user.name : 'Customer';
 
-  const menuItems = [
-    { icon: '📦', title: lang === 'ha' ? 'Odojina' : 'My Orders', action: () => alert('Orders Clicked') },
-    { icon: '📍', title: lang === 'ha' ? 'Adireshin Isar da Saƙo' : 'Shipping Address', action: () => alert('Address Clicked') },
-    { icon: '💳', title: lang === 'ha' ? 'Hanyoyin Biya' : 'Payment Methods', action: () => alert('Payments Clicked') },
-    { icon: '🔔', title: lang === 'ha' ? 'Sanarwa' : 'Notifications', action: () => alert('Notifications Clicked') },
-    { icon: '⚙️', title: lang === 'ha' ? 'Saituna' : 'Settings', action: () => alert('Settings Clicked') },
-    { icon: '🎧', title: lang === 'ha' ? 'Taimako da Tallafi' : 'Help & Support', action: () => alert('Support Clicked') }
-  ];
+  const content = {
+    en: {
+      title: 'My Profile',
+      greeting: `Hello, ${userName}`,
+      myOrders: 'My Orders',
+      shippingAddress: 'Shipping Address',
+      paymentMethods: 'Payment Methods',
+      language: 'Language / Harshe',
+      support: 'Customer Support',
+      logout: 'Log Out'
+    },
+    ha: {
+      title: 'Asusun Nawa',
+      greeting: `Barka, ${userName}`,
+      myOrders: 'Ododina na Baya',
+      shippingAddress: 'Adireshin Isar da Saƙo',
+      paymentMethods: 'Hanyoyin Biya',
+      language: 'Harshe / Language',
+      support: 'Taimakon Abokan Ciniki',
+      logout: 'Fita daga Asusun'
+    }
+  };
+
+  const t = content[lang] || content.en;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="bg-emerald-900 text-white p-6 rounded-b-2xl shadow-md text-center">
-        <div className="w-16 h-16 bg-emerald-700 mx-auto rounded-full flex items-center justify-center font-bold text-2xl border-2 border-white mb-2">
-          {userName.charAt(0).toUpperCase()}
-        </div>
-        <h1 className="font-bold text-lg">{userName}</h1>
-        <p className="text-xs text-emerald-200">{lang === 'ha' ? 'Abokin Ciniki' : 'Valued Customer'}</p>
+      <div className="bg-emerald-900 text-white p-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
+        <h1 className="text-base font-bold">{t.title}</h1>
+        <button
+          onClick={() => setLang(lang === 'en' ? 'ha' : 'en')}
+          className="px-2.5 py-1 bg-emerald-800 text-emerald-100 rounded-lg text-xs font-semibold"
+        >
+          {lang === 'en' ? '🇳🇬 HA' : '🇬🇧 EN'}
+        </button>
       </div>
 
-      <div className="p-4 space-y-2">
-        {menuItems.map((item, idx) => (
-          <div
-            key={idx}
-            onClick={item.action}
-            className="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-50"
+      <div className="p-4 space-y-4">
+        {/* User Card */}
+        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center space-x-3">
+          <div className="w-12 h-12 bg-emerald-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
+            {userName.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h2 className="font-bold text-sm text-gray-900">{t.greeting}</h2>
+            <p className="text-[11px] text-gray-500">customer@smbglobalmarket.com</p>
+          </div>
+        </div>
+
+        {/* Menu Options */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-100">
+          <div 
+            onClick={() => onNavigate && onNavigate('orders')}
+            className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50"
           >
             <div className="flex items-center space-x-3">
-              <span className="text-xl">{item.icon}</span>
-              <span className="text-xs font-bold text-gray-800">{item.title}</span>
+              <span className="text-lg">📦</span>
+              <span className="text-xs font-bold text-gray-800">{t.myOrders}</span>
             </div>
-            <span className="text-gray-400 text-sm">›</span>
+            <span className="text-gray-400 text-xs">›</span>
           </div>
-        ))}
+
+          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+            <div className="flex items-center space-x-3">
+              <span className="text-lg">📍</span>
+              <span className="text-xs font-bold text-gray-800">{t.shippingAddress}</span>
+            </div>
+            <span className="text-gray-400 text-xs">›</span>
+          </div>
+
+          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+            <div className="flex items-center space-x-3">
+              <span className="text-lg">💳</span>
+              <span className="text-xs font-bold text-gray-800">{t.paymentMethods}</span>
+            </div>
+            <span className="text-gray-400 text-xs">›</span>
+          </div>
+
+          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
+            <div className="flex items-center space-x-3">
+              <span className="text-lg">🎧</span>
+              <span className="text-xs font-bold text-gray-800">{t.support}</span>
+            </div>
+            <span className="text-gray-400 text-xs">›</span>
+          </div>
+        </div>
 
         <button
           onClick={() => onNavigate && onNavigate('login')}
-          className="w-full mt-4 py-3 bg-red-50 text-red-600 font-bold rounded-xl text-xs border border-red-200"
+          className="w-full py-3 bg-red-50 text-red-700 text-xs font-bold rounded-xl border border-red-100"
         >
-          {lang === 'ha' ? 'Fita daga Asusun' : 'Log Out'}
+          🚪 {t.logout}
         </button>
       </div>
     </div>

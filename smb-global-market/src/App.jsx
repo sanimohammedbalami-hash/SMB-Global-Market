@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage';
 import AccountPage from './pages/AccountPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -51,6 +52,8 @@ function App() {
         return <CheckoutPage onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
       case 'product_details':
         return <ProductDetailsPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'orders':
+        return <OrdersPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
