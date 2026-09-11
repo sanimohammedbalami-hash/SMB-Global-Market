@@ -54,8 +54,8 @@ function CartPage({ onNavigate, lang, setLang }) {
             <span className="text-emerald-800">₦337,000</span>
           </div>
           <button
-            onClick={() => alert('Proceeding to Checkout...')}
-            className="w-full mt-3 py-3 bg-emerald-800 text-white font-bold rounded-xl text-xs"
+            onClick={() => onNavigate && onNavigate('checkout')}
+            className="w-full mt-3 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-bold rounded-xl text-xs transition"
           >
             {lang === 'ha' ? 'Ci gaba da Biya' : 'Proceed to Checkout'}
           </button>

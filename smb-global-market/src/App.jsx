@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import CategoriesPage from './pages/CategoriesPage';
 import CartPage from './pages/CartPage';
 import AccountPage from './pages/AccountPage';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -45,6 +46,8 @@ function App() {
         return <CartPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'account':
         return <AccountPage onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
+      case 'checkout':
+        return <CheckoutPage onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
