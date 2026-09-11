@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd smb-global-market && npm install && npm run build",
+  "outputDirectory": "smb-global-market/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
