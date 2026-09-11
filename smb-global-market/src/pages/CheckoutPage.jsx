@@ -55,7 +55,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
   const payWithPaystack = () => {
     if (window.PaystackPop) {
       const handler = window.PaystackPop.setup({
-        key: 'pk_test_PUBLIC_KEY_HERE', // Nan za a saka Public Key dinka na Paystack
+        key: 'LURA_SAKA_PUBLIC_KEY_DINKA_NAN', // Nan za a saka Public Key dinka na Paystack
         email: address.email,
         amount: 337000 * 100, // Paystack yana lissafi a kobo (₦337,000 * 100)
         currency: 'NGN',
