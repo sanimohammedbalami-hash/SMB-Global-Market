@@ -13,6 +13,7 @@ import OrdersPage from './pages/OrdersPage';
 import SearchPage from './pages/SearchPage';
 import WishlistPage from './pages/WishlistPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -63,6 +64,8 @@ function App() {
         return <WishlistPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'order_success':
         return <OrderSuccessPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'order_details':
+        return <OrderDetailsPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;

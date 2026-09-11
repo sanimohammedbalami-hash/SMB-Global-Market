@@ -3,18 +3,19 @@ import React from 'react';
 function OrdersPage({ onNavigate, lang, setLang }) {
   const orders = [
     {
-      id: 'SMB-882910',
-      date: '10 Sep 2026',
-      status: 'In Transit',
-      statusHa: 'Yana Hanyar Isowa',
-      statusBg: 'bg-blue-100 text-blue-800',
-      total: 337000,
+      id: 'SMB123456',
+      date: 'May 12, 2025',
+      status: 'Processing',
+      statusHa: 'Ana Shiryawa',
+      statusBg: 'bg-yellow-100 text-yellow-800',
+      total: 855000,
       items: [
-        { name: 'Samsung Galaxy A55 5G', qty: 1, icon: '📱' }
+        { name: 'iPhone 15 128GB', qty: 1, icon: '📱' },
+        { name: 'Nike Sneakers', qty: 1, icon: '👟' }
       ]
     },
     {
-      id: 'SMB-771042',
+      id: 'SMB771042',
       date: '28 Aug 2026',
       status: 'Delivered',
       statusHa: 'An Isar da Saƙo',
@@ -32,16 +33,14 @@ function OrdersPage({ onNavigate, lang, setLang }) {
       noOrders: 'No orders found',
       orderId: 'Order ID',
       totalAmount: 'Total Amount',
-      itemsCount: 'Items',
-      trackOrder: 'Track Package'
+      viewDetails: 'View Details'
     },
     ha: {
       title: 'Ododina na Baya',
       noOrders: 'Ba a samu wata oda ba tukuna',
       orderId: 'Lambar Oda',
       totalAmount: 'Jimillar Kudin',
-      itemsCount: 'Yawan Kaya',
-      trackOrder: 'Binciki Inda Kayan Yake'
+      viewDetails: 'Duba Bayani'
     }
   };
 
@@ -99,10 +98,10 @@ function OrdersPage({ onNavigate, lang, setLang }) {
                 <p className="font-extrabold text-emerald-800">₦{order.total.toLocaleString()}</p>
               </div>
               <button
-                onClick={() => alert(lang === 'ha' ? 'Saitin bin sawun sako yana kan hanya...' : 'Tracking system coming soon...')}
-                className="px-3 py-1.5 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold hover:bg-emerald-100"
+                onClick={() => onNavigate && onNavigate('order_details')}
+                className="px-3 py-1.5 bg-emerald-800 text-white rounded-lg text-xs font-bold hover:bg-emerald-900"
               >
-                📦 {t.trackOrder}
+                {t.viewDetails}
               </button>
             </div>
           </div>
