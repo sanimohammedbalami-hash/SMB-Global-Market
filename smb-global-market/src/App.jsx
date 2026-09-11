@@ -16,6 +16,9 @@ import OrderSuccessPage from './pages/OrderSuccessPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
 import EditProfilePage from './pages/EditProfilePage';
+import AddressPage from './pages/AddressPage';
+import NotificationPage from './pages/NotificationPage';
+import CustomerServicePage from './pages/CustomerServicePage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -72,6 +75,12 @@ function App() {
         return <TrackOrderPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'edit_profile':
         return <EditProfilePage onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
+      case 'addresses':
+        return <AddressPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'notifications':
+        return <NotificationPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'customer_service':
+        return <CustomerServicePage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
@@ -86,37 +95,20 @@ function App() {
 
       {showBottomNav && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-around items-center z-50">
-          <button
-            onClick={() => handleNavigate('home')}
-            className={`flex flex-col items-center ${currentScreen === 'home' ? 'text-emerald-800' : 'text-gray-500'}`}
-          >
+          <button onClick={() => handleNavigate('home')} className={`flex flex-col items-center ${currentScreen === 'home' ? 'text-emerald-800' : 'text-gray-500'}`}>
             <span className="text-lg">🏠</span>
             <span className="text-[10px] font-bold">Home</span>
           </button>
-
-          <button
-            onClick={() => handleNavigate('categories')}
-            className={`flex flex-col items-center ${currentScreen === 'categories' ? 'text-emerald-800' : 'text-gray-500'}`}
-          >
+          <button onClick={() => handleNavigate('categories')} className={`flex flex-col items-center ${currentScreen === 'categories' ? 'text-emerald-800' : 'text-gray-500'}`}>
             <span className="text-lg">🗂️</span>
             <span className="text-[10px] font-medium">Categories</span>
           </button>
-
-          <button
-            onClick={() => handleNavigate('cart')}
-            className={`flex flex-col items-center relative ${currentScreen === 'cart' ? 'text-emerald-800' : 'text-gray-500'}`}
-          >
+          <button onClick={() => handleNavigate('cart')} className={`flex flex-col items-center relative ${currentScreen === 'cart' ? 'text-emerald-800' : 'text-gray-500'}`}>
             <span className="text-lg">🛒</span>
-            <span className="absolute -top-1 right-2 bg-red-500 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
-              2
-            </span>
+            <span className="absolute -top-1 right-2 bg-red-500 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span>
             <span className="text-[10px] font-medium">Cart</span>
           </button>
-
-          <button
-            onClick={() => handleNavigate('account')}
-            className={`flex flex-col items-center ${currentScreen === 'account' ? 'text-emerald-800' : 'text-gray-500'}`}
-          >
+          <button onClick={() => handleNavigate('account')} className={`flex flex-col items-center ${currentScreen === 'account' ? 'text-emerald-800' : 'text-gray-500'}`}>
             <span className="text-lg">👤</span>
             <span className="text-[10px] font-medium">Account</span>
           </button>
