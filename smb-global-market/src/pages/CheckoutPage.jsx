@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function CheckoutPage({ onNavigate, lang, setLang, user }) {
   const userName = user && user.name ? user.name : 'Customer';
-  const [paymentMethod, setPaymentMethod] = useState('transfer');
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [address, setAddress] = useState({
     fullName: userName,
     phone: '',
@@ -20,13 +20,13 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
       street: 'Street Address',
       paymentTitle: 'Payment Method',
       transfer: 'Bank Transfer',
-      card: 'Debit / Credit Card',
-      cod: 'Pay on Delivery',
+      card: 'Debit / Credit Card (Paystack)',
       orderSummary: 'Order Summary',
       subtotal: 'Subtotal',
       delivery: 'Delivery Fee',
       total: 'Total',
-      placeOrder: 'Place Order via WhatsApp'
+      payNow: 'Pay Now via Paystack',
+      orderWhatsapp: 'Order via Bank Transfer'
     },
     ha: {
       title: 'Kammala Biya',
@@ -37,13 +37,13 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
       street: 'Adireshin Gida ko Kanti',
       paymentTitle: 'Hanyar Biya',
       transfer: 'Turawar Banki (Transfer)',
-      card: 'Katin Banki (ATM Card)',
-      cod: 'Biya Yayin Karɓar Kaya',
+      card: 'Katin Banki / Paystack (ATM Card)',
       orderSummary: 'Bayanin Odarku',
       subtotal: 'Jimillar Kaya',
       delivery: 'Kudin Isarwa',
       total: 'Cikakken Kudin',
-      placeOrder: 'Tura Odar ta WhatsApp'
+      payNow: 'Biya Yanzu ta Paystack',
+      orderWhatsapp: 'Tura Odar Transfer ta WhatsApp'
     }
   };
 
@@ -51,8 +51,12 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
 
   const handleOrder = (e) => {
     e.preventDefault();
-    const message = `Hello SMB Global Market! I want to place an order:%0A- Name: ${address.fullName}%0A- Phone: ${address.phone}%0A- Location: ${address.streetAddress}, ${address.city}%0A- Payment Method: ${paymentMethod}%0A- Total Amount: ₦337,000`;
-    window.open(`https://wa.me/?text=${message}`, '_blank');
+    if (paymentMethod === 'card') {
+      alert(lang === 'ha' ? 'Saitin Paystack yana kan haɗawa...' : 'Connecting to Paystack gateway...');
+    } else {
+      const message = `Hello SMB Global Market! I want to pay via Bank Transfer:%0A- Name: ${address.fullName}%0A- Phone: ${address.phone}%0A- Location: ${address.streetAddress}, ${address.city}%0A- Total Amount: ₦337,000`;
+      window.open(`https://wa.me/?text=${message}`, '_blank');
+    }
   };
 
   return (
@@ -117,7 +121,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
             <input
               type="text"
               required
-              placeholder="e.g. No. 12 Sabon Gari Road"
+              placeholder="e.g. Sabon Gari Market, Kano"
               value={address.streetAddress}
               onChange={(e) => setAddress({ ...address, streetAddress: e.target.value })}
               className="w-full p-2.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-700"
@@ -129,20 +133,6 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-2">
           <h2 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">{t.paymentTitle}</h2>
           
-          <label className={`flex items-center justify-between p-3 border rounded-xl cursor-pointer ${paymentMethod === 'transfer' ? 'border-emerald-700 bg-emerald-50' : 'border-gray-200'}`}>
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">🏦</span>
-              <span className="text-xs font-bold text-gray-800">{t.transfer}</span>
-            </div>
-            <input
-              type="radio"
-              name="payment"
-              checked={paymentMethod === 'transfer'}
-              onChange={() => setPaymentMethod('transfer')}
-              className="accent-emerald-700"
-            />
-          </label>
-
           <label className={`flex items-center justify-between p-3 border rounded-xl cursor-pointer ${paymentMethod === 'card' ? 'border-emerald-700 bg-emerald-50' : 'border-gray-200'}`}>
             <div className="flex items-center space-x-3">
               <span className="text-lg">💳</span>
@@ -157,16 +147,16 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
             />
           </label>
 
-          <label className={`flex items-center justify-between p-3 border rounded-xl cursor-pointer ${paymentMethod === 'cod' ? 'border-emerald-700 bg-emerald-50' : 'border-gray-200'}`}>
+          <label className={`flex items-center justify-between p-3 border rounded-xl cursor-pointer ${paymentMethod === 'transfer' ? 'border-emerald-700 bg-emerald-50' : 'border-gray-200'}`}>
             <div className="flex items-center space-x-3">
-              <span className="text-lg">💵</span>
-              <span className="text-xs font-bold text-gray-800">{t.cod}</span>
+              <span className="text-lg">🏦</span>
+              <span className="text-xs font-bold text-gray-800">{t.transfer}</span>
             </div>
             <input
               type="radio"
               name="payment"
-              checked={paymentMethod === 'cod'}
-              onChange={() => setPaymentMethod('cod')}
+              checked={paymentMethod === 'transfer'}
+              onChange={() => setPaymentMethod('transfer')}
               className="accent-emerald-700"
             />
           </label>
@@ -194,7 +184,7 @@ function CheckoutPage({ onNavigate, lang, setLang, user }) {
           type="submit"
           className="w-full py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold rounded-xl shadow-lg transition"
         >
-          📲 {t.placeOrder}
+          {paymentMethod === 'card' ? `💳 ${t.payNow}` : `📲 ${t.orderWhatsapp}`}
         </button>
       </form>
     </div>
