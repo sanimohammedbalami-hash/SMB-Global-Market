@@ -12,13 +12,9 @@ function Home({ onNavigate, lang, setLang, user }) {
       flashSale: 'FLASH SALE',
       flashTitle: 'Big Discounts, Bigger Dreams!',
       flashSub: 'Top brands. Best prices. Shop now!',
-      endsIn: 'Ends in:',
       categories: 'Shop by Category',
       seeAll: 'See All >',
-      featured: 'Featured Products',
-      limitedStock: 'Limited Stock!',
-      limitedSub: 'Popular items are selling fast. Don\'t miss out!',
-      onlyLeft: 'Only 5 left'
+      featured: 'Featured Products'
     },
     ha: {
       greeting: `Sannu, ${userName} 👋`,
@@ -28,13 +24,9 @@ function Home({ onNavigate, lang, setLang, user }) {
       flashSale: 'RAGIN FARASHI',
       flashTitle: 'Ragi Mai Yawa, Cikar Burinku!',
       flashSub: 'Manyan samfura. Farashi mai kyau. Saya yanzu!',
-      endsIn: 'Yana karewa a:',
       categories: 'Rarrabuwar Kayayyaki',
       seeAll: 'Duba Duka >',
-      featured: 'Zantattun Kayayyaki',
-      limitedStock: 'Kayan sun kusa ƙarewa!',
-      limitedSub: 'Kaya masu farinjini suna saurin ƙarewa!',
-      onlyLeft: 'Sauran guda 5 kawai'
+      featured: 'Zantattun Kayayyaki'
     }
   };
 
@@ -71,11 +63,12 @@ function Home({ onNavigate, lang, setLang, user }) {
           <span>{t.delivery}</span>
         </div>
 
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={() => onNavigate && onNavigate('search')}>
           <input
             type="text"
+            readOnly
             placeholder={t.searchPlaceholder}
-            className="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-xl text-xs shadow-inner focus:outline-none"
+            className="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-xl text-xs shadow-inner cursor-pointer focus:outline-none"
           />
           <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
         </div>

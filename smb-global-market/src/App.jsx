@@ -10,6 +10,7 @@ import AccountPage from './pages/AccountPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrdersPage from './pages/OrdersPage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -54,6 +55,8 @@ function App() {
         return <ProductDetailsPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'orders':
         return <OrdersPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'search':
+        return <SearchPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
