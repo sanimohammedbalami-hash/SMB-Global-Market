@@ -5,23 +5,23 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
 
   const content = {
     en: {
-      title: 'My Profile',
-      greeting: `Hello, ${userName}`,
+      accountTitle: 'Account',
+      hello: 'Hello',
       myOrders: 'My Orders',
-      wishlist: 'My Wishlist',
-      shippingAddress: 'Shipping Address',
-      paymentMethods: 'Payment Methods',
-      support: 'Customer Support',
+      wishlist: 'Wishlist',
+      editProfile: 'Edit Profile',
+      settings: 'Settings',
+      help: 'Help Center',
       logout: 'Log Out'
     },
     ha: {
-      title: 'Asusun Nawa',
-      greeting: `Barka, ${userName}`,
-      myOrders: 'Ododina na Baya',
+      accountTitle: 'Asusu',
+      hello: 'Sannu',
+      myOrders: 'Ododina',
       wishlist: 'Abubuwan Sha\'awa',
-      shippingAddress: 'Adireshin Isar da Saƙo',
-      paymentMethods: 'Hanyoyin Biya',
-      support: 'Taimakon Abokan Ciniki',
+      editProfile: 'Sauya Bayanan Kanka',
+      settings: 'Saituna',
+      help: 'Cibiyar Taimako',
       logout: 'Fita daga Asusun'
     }
   };
@@ -30,8 +30,9 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="bg-emerald-900 text-white p-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
-        <h1 className="text-base font-bold">{t.title}</h1>
+      {/* Top Header */}
+      <div className="bg-emerald-900 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 className="text-sm font-bold">{t.accountTitle}</h1>
         <button
           onClick={() => setLang(lang === 'en' ? 'ha' : 'en')}
           className="px-2.5 py-1 bg-emerald-800 text-emerald-100 rounded-lg text-xs font-semibold"
@@ -40,72 +41,81 @@ function AccountPage({ onNavigate, lang, setLang, user }) {
         </button>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* User Card */}
-        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center space-x-3">
-          <div className="w-12 h-12 bg-emerald-800 text-white rounded-full flex items-center justify-center font-bold text-lg">
-            {userName.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h2 className="font-bold text-sm text-gray-900">{t.greeting}</h2>
-            <p className="text-[11px] text-gray-500">sani@smbglobalmarket.com</p>
-          </div>
+      {/* User Info Header */}
+      <div className="bg-emerald-800 text-white p-6 rounded-b-3xl shadow-md text-center space-y-2">
+        <div className="w-16 h-16 bg-white text-emerald-800 font-extrabold text-2xl rounded-full flex items-center justify-center mx-auto border-2 border-emerald-100 shadow">
+          {userName.charAt(0)}
         </div>
+        <div>
+          <h2 className="text-base font-bold">{userName}</h2>
+          <p className="text-xs text-emerald-200">saniachibu@gmail.com</p>
+        </div>
+      </div>
 
-        {/* Menu Options */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-100">
-          <div 
+      {/* Menu Options */}
+      <div className="p-4 space-y-3">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100 overflow-hidden">
+          <button
             onClick={() => onNavigate && onNavigate('orders')}
-            className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+            className="w-full p-4 text-left flex justify-between items-center text-xs font-semibold text-gray-700 hover:bg-emerald-50 transition"
           >
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">📦</span>
-              <span className="text-xs font-bold text-gray-800">{t.myOrders}</span>
-            </div>
-            <span className="text-gray-400 text-xs">›</span>
-          </div>
+            <span className="flex items-center space-x-3">
+              <span>📦</span>
+              <span>{t.myOrders}</span>
+            </span>
+            <span className="text-gray-400">›</span>
+          </button>
 
-          <div 
+          <button
             onClick={() => onNavigate && onNavigate('wishlist')}
-            className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+            className="w-full p-4 text-left flex justify-between items-center text-xs font-semibold text-gray-700 hover:bg-emerald-50 transition"
           >
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">❤️</span>
-              <span className="text-xs font-bold text-gray-800">{t.wishlist}</span>
-            </div>
-            <span className="text-gray-400 text-xs">›</span>
-          </div>
+            <span className="flex items-center space-x-3">
+              <span>❤️</span>
+              <span>{t.wishlist}</span>
+            </span>
+            <span className="text-gray-400">›</span>
+          </button>
 
-          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">📍</span>
-              <span className="text-xs font-bold text-gray-800">{t.shippingAddress}</span>
-            </div>
-            <span className="text-gray-400 text-xs">›</span>
-          </div>
+          <button
+            onClick={() => onNavigate && onNavigate('edit_profile')}
+            className="w-full p-4 text-left flex justify-between items-center text-xs font-semibold text-gray-700 hover:bg-emerald-50 transition"
+          >
+            <span className="flex items-center space-x-3">
+              <span>✏️</span>
+              <span>{t.editProfile}</span>
+            </span>
+            <span className="text-gray-400">›</span>
+          </button>
 
-          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">💳</span>
-              <span className="text-xs font-bold text-gray-800">{t.paymentMethods}</span>
-            </div>
-            <span className="text-gray-400 text-xs">›</span>
-          </div>
+          <button
+            onClick={() => alert(lang === 'ha' ? 'Za a faɗada Saituna nan ba da jimawa ba!' : 'Settings coming soon!')}
+            className="w-full p-4 text-left flex justify-between items-center text-xs font-semibold text-gray-700 hover:bg-emerald-50 transition"
+          >
+            <span className="flex items-center space-x-3">
+              <span>⚙️</span>
+              <span>{t.settings}</span>
+            </span>
+            <span className="text-gray-400">›</span>
+          </button>
 
-          <div className="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50">
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">🎧</span>
-              <span className="text-xs font-bold text-gray-800">{t.support}</span>
-            </div>
-            <span className="text-gray-400 text-xs">›</span>
-          </div>
+          <button
+            onClick={() => alert(lang === 'ha' ? 'Ana haɗawa da sashen taimako...' : 'Connecting to help center...')}
+            className="w-full p-4 text-left flex justify-between items-center text-xs font-semibold text-gray-700 hover:bg-emerald-50 transition"
+          >
+            <span className="flex items-center space-x-3">
+              <span>❓</span>
+              <span>{t.help}</span>
+            </span>
+            <span className="text-gray-400">›</span>
+          </button>
         </div>
 
         <button
           onClick={() => onNavigate && onNavigate('login')}
-          className="w-full py-3 bg-red-50 text-red-700 text-xs font-bold rounded-xl border border-red-100"
+          className="w-full py-3 bg-red-50 text-red-600 font-bold text-xs rounded-xl border border-red-100 hover:bg-red-100 transition"
         >
-          🚪 {t.logout}
+          {t.logout}
         </button>
       </div>
     </div>

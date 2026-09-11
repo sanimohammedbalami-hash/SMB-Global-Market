@@ -15,6 +15,7 @@ import WishlistPage from './pages/WishlistPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
+import EditProfilePage from './pages/EditProfilePage';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -32,7 +33,7 @@ function App() {
 
   const handleNavigate = (screen, userData = null) => {
     if (userData) {
-      setUser(userData);
+      setUser((prev) => ({ ...prev, ...userData }));
     }
     setCurrentScreen(screen);
   };
@@ -69,6 +70,8 @@ function App() {
         return <OrderDetailsPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
       case 'track_order':
         return <TrackOrderPage onNavigate={handleNavigate} lang={lang} setLang={setLang} />;
+      case 'edit_profile':
+        return <EditProfilePage onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
       case 'home':
       default:
         return <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />;
