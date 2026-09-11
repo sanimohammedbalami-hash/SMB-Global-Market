@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function Login({ onNavigate, lang, setLang }) {
   const [formData, setFormData] = useState({
-    identifier: '', // Email or Phone
+    identifier: '',
     password: ''
   });
 
@@ -14,8 +14,7 @@ function Login({ onNavigate, lang, setLang }) {
       password: 'Password',
       button: 'Sign In',
       noAccount: "Don't have an account?",
-      signUp: 'Sign Up',
-      alertMsg: 'Login successful!'
+      signUp: 'Sign Up'
     },
     ha: {
       title: 'Barka da Sake Dawowa',
@@ -24,8 +23,7 @@ function Login({ onNavigate, lang, setLang }) {
       password: 'Kalmar Sirri (Password)',
       button: 'Shiga',
       noAccount: 'Baka da asusu?',
-      signUp: 'Yi Rijista',
-      alertMsg: 'Shiga ta yi nasara!'
+      signUp: 'Yi Rijista'
     }
   };
 
@@ -37,7 +35,12 @@ function Login({ onNavigate, lang, setLang }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(t.alertMsg);
+    let extractedName = formData.identifier.split('@')[0];
+    extractedName = extractedName ? extractedName.charAt(0).toUpperCase() + extractedName.slice(1) : 'Customer';
+    
+    if (onNavigate) {
+      onNavigate('home', { name: extractedName });
+    }
   };
 
   return (
@@ -72,7 +75,7 @@ function Login({ onNavigate, lang, setLang }) {
                 value={formData.identifier}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-600 focus:border-emerald-600"
-                placeholder="080... or example@gmail.com"
+                placeholder="Ali, Adamu, ko example@gmail.com"
               />
             </div>
 

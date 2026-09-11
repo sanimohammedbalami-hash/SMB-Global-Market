@@ -3,10 +3,12 @@ import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import Home from './pages/Home';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
   const [lang, setLang] = useState('en');
+  const [user, setUser] = useState({ name: 'Customer' });
 
   useEffect(() => {
     if (currentScreen === 'splash') {
@@ -17,7 +19,10 @@ function App() {
     }
   }, [currentScreen]);
 
-  const handleNavigate = (screen) => {
+  const handleNavigate = (screen, userData = null) => {
+    if (userData) {
+      setUser(userData);
+    }
     setCurrentScreen(screen);
   };
 
@@ -32,6 +37,9 @@ function App() {
       )}
       {currentScreen === 'login' && (
         <Login onNavigate={handleNavigate} lang={lang} setLang={setLang} />
+      )}
+      {currentScreen === 'home' && (
+        <Home onNavigate={handleNavigate} lang={lang} setLang={setLang} user={user} />
       )}
     </div>
   );

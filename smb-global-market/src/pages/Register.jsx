@@ -1,41 +1,39 @@
 import React, { useState } from 'react';
 
 function Register({ onNavigate, lang, setLang }) {
-  const [regType, setRegType] = useState('phone'); // 'phone' or 'email'
+  const [usePhone, setUsePhone] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
-    contactInput: '',
+    contact: '',
     password: ''
   });
 
   const content = {
     en: {
-      title: 'Create your account',
+      title: 'Create Account',
       subtitle: 'Join SMB Global Market today',
       fullName: 'Full Name',
-      usePhone: 'Use Phone Number',
-      useEmail: 'Use Email Address',
-      phoneLabel: 'Phone Number',
       emailLabel: 'Email Address',
+      phoneLabel: 'Phone Number',
+      switchPhone: 'Use Phone Number instead',
+      switchEmail: 'Use Email Address instead',
       password: 'Password',
       button: 'Sign Up',
-      hasAccount: 'Already have an account?',
-      login: 'Log In',
-      alertMsg: 'Registration successful!'
+      alreadyAccount: 'Already have an account?',
+      signIn: 'Sign In'
     },
     ha: {
-      title: 'Ƙirƙiri asusunka',
-      subtitle: 'Kasance tare da SMB Global Market a yau',
+      title: 'Ƙirƙiri Asusu',
+      subtitle: 'Shiga SMB Global Market a yau',
       fullName: 'Cikakken Suna',
-      usePhone: 'Yi amfani da Lambar Waya',
-      useEmail: 'Yi amfani da Email',
-      phoneLabel: 'Lambar Waya',
       emailLabel: 'Adireshin Email',
+      phoneLabel: 'Lambar Waya',
+      switchPhone: 'Yi amfani da Lambar Waya',
+      switchEmail: 'Yi amfani da Email Address',
       password: 'Kalmar Sirri (Password)',
-      button: 'Yi Rijista',
-      hasAccount: 'Kana da asusu a baya?',
-      login: 'Shiga',
-      alertMsg: 'Rijista ta yi nasara!'
+      button: 'Rijista',
+      alreadyAccount: 'Tuni kana da asusu?',
+      signIn: 'Shiga'
     }
   };
 
@@ -47,11 +45,14 @@ function Register({ onNavigate, lang, setLang }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(t.alertMsg);
+    const customerName = formData.fullName.trim() || 'Customer';
+    if (onNavigate) {
+      onNavigate('home', { name: customerName });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-10 px-6 relative">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-6 relative">
       <div className="absolute top-4 right-4">
         <button
           onClick={() => setLang(lang === 'en' ? 'ha' : 'en')}
@@ -70,25 +71,8 @@ function Register({ onNavigate, lang, setLang }) {
         </p>
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 shadow rounded-lg">
-          <div className="flex justify-center mb-6 border-b pb-3 space-x-4">
-            <button
-              type="button"
-              onClick={() => { setRegType('phone'); setFormData({ ...formData, contactInput: '' }); }}
-              className={`pb-1 text-sm font-semibold ${regType === 'phone' ? 'border-b-2 border-emerald-700 text-emerald-700' : 'text-gray-500'}`}
-            >
-              {t.usePhone}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setRegType('email'); setFormData({ ...formData, contactInput: '' }); }}
-              className={`pb-1 text-sm font-semibold ${regType === 'email' ? 'border-b-2 border-emerald-700 text-emerald-700' : 'text-gray-500'}`}
-            >
-              {t.useEmail}
-            </button>
-          </div>
-
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-gray-700">{t.fullName}</label>
@@ -99,22 +83,31 @@ function Register({ onNavigate, lang, setLang }) {
                 value={formData.fullName}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-600 focus:border-emerald-600"
-                placeholder="Sani Mohammed"
+                placeholder="e.g. Ali, Adamu, Aisha"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {regType === 'phone' ? t.phoneLabel : t.emailLabel}
-              </label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  {usePhone ? t.phoneLabel : t.emailLabel}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setUsePhone(!usePhone)}
+                  className="text-xs text-emerald-700 font-medium hover:underline"
+                >
+                  {usePhone ? t.switchEmail : t.switchPhone}
+                </button>
+              </div>
               <input
-                type={regType === 'phone' ? 'tel' : 'email'}
-                name="contactInput"
+                type={usePhone ? 'tel' : 'email'}
+                name="contact"
                 required
-                value={formData.contactInput}
+                value={formData.contact}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-600 focus:border-emerald-600"
-                placeholder={regType === 'phone' ? '+234...' : 'example@gmail.com'}
+                placeholder={usePhone ? '08012345678' : 'example@gmail.com'}
               />
             </div>
 
@@ -141,12 +134,12 @@ function Register({ onNavigate, lang, setLang }) {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              {t.hasAccount}{' '}
+              {t.alreadyAccount}{' '}
               <button
                 onClick={() => onNavigate && onNavigate('login')}
                 className="font-medium text-emerald-700 hover:underline"
               >
-                {t.login}
+                {t.signIn}
               </button>
             </p>
           </div>
