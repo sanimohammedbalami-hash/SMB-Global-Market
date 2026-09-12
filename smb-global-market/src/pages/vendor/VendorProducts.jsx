@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getVendorByProfileId } from '../../services/vendorService';
 import { getVendorProducts, createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { getCategories } from '../../services/productService';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function VendorProducts() {
   const { profile } = useAuth();
@@ -10,7 +11,9 @@ export default function VendorProducts() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({ name: '', price: '', stock: '', category_id: '', description: '' });
+  const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -22,9 +25,25 @@ export default function VendorProducts() {
     })();
   }, [profile]);
 
+  async function uploadProductImage(productId, file) {
+    const ext = file.name.split('.').pop();
+    const path = `${vendor.id}/${productId}-${Date.now()}.${ext}`;
+    const { error: uploadErr } = await supabase.storage.from('product-images').upload(path, file);
+    if (uploadErr) throw uploadErr;
+    const { data: publicUrlData } = supabase.storage.from('product-images').getPublicUrl(path);
+    const { error: insertErr } = await supabase.from('product_images').insert({
+      product_id: productId,
+      url: publicUrlData.publicUrl,
+      sort_order: 0
+    });
+    if (insertErr) throw insertErr;
+    return publicUrlData.publicUrl;
+  }
+
   async function handleCreate(e) {
     e.preventDefault();
     setError(null);
+    setUploading(true);
     try {
       const created = await createProduct(vendor.id, {
         name: form.name,
@@ -34,10 +53,18 @@ export default function VendorProducts() {
         status: 'draft',
         stock: Number(form.stock)
       });
+
+      if (imageFile) {
+        await uploadProductImage(created.id, imageFile);
+      }
+
       setProducts((p) => [created, ...p]);
       setForm({ name: '', price: '', stock: '', category_id: '', description: '' });
+      setImageFile(null);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -67,16 +94,36 @@ export default function VendorProducts() {
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <textarea className="input col-span-2" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+
+        <div className="col-span-2">
+          <label className="text-sm text-gray-600 block mb-1">Product photo</label>
+          <input
+            type="file"
+            accept="image/*"
+            className="input"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
+        </div>
+
         {error && <p className="text-red-500 text-sm col-span-2">{error}</p>}
-        <button className="btn-primary col-span-2">Add Product (as draft)</button>
+        <button className="btn-primary col-span-2" disabled={uploading}>
+          {uploading ? 'Saving...' : 'Add Product (as draft)'}
+        </button>
       </form>
 
       <div className="space-y-2">
         {products.map((p) => (
           <div key={p.id} className="card p-3 flex justify-between items-center">
-            <div>
-              <p className="font-medium">{p.name}</p>
-              <p className="text-xs text-gray-500">₦{Number(p.price).toLocaleString()} · {p.status}</p>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                {p.product_images?.[0]?.url && (
+                  <img src={p.product_images[0].url} alt={p.name} className="w-full h-full object-cover" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium">{p.name}</p>
+                <p className="text-xs text-gray-500">₦{Number(p.price).toLocaleString()} · {p.status}</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <button onClick={() => togglePublish(p)} className="btn-secondary text-xs">
