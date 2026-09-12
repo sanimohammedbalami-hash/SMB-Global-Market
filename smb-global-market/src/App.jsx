@@ -131,10 +131,11 @@ export default function App() {
   }
 
   return (
-    <Routes>
+<Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/become-a-vendor" element={<BecomeAVendor />} />
       <Route path="/vendor/register" element={<VendorRegister />} />
       <Route path="/vendor/login" element={<VendorLogin />} />
       <Route path="/admin/login" element={<AdminLogin />} />
@@ -145,7 +146,6 @@ export default function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/become-a-vendor" element={<BecomeAVendor />} />
         <Route path="/checkout" element={<ProtectedRoute allowedRoles={['customer']}><Checkout /></ProtectedRoute>} />
         <Route path="/order-success" element={<ProtectedRoute allowedRoles={['customer']}><OrderSuccess /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute allowedRoles={['customer']}><Orders /></ProtectedRoute>} />
