@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import DashboardNav from './components/common/DashboardNav';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import SplashScreen from './pages/SplashScreen';
+import OnboardingScreen from './pages/OnboardingScreen';
 
 import Home from './pages/customer/Home';
 import Login from './pages/customer/Login';
@@ -92,6 +95,27 @@ function AdminLayout() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('smb_onboarded'));
+  const [lang, setLang] = useState('en');
+
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  }
+
+  if (showOnboarding) {
+    return (
+      <OnboardingScreen
+        lang={lang}
+        setLang={setLang}
+        onNavigate={() => {
+          localStorage.setItem('smb_onboarded', 'true');
+          setShowOnboarding(false);
+        }}
+      />
+    );
+  }
+
   return (
     <Routes>
       <Route element={<CustomerLayout />}>
