@@ -16,7 +16,8 @@ import AddressPage from './pages/AddressPage';
 import CustomerServicePage from './pages/CustomerServicePage';
 
 export default function App() {
-  const [lang, setLang] = useState('ha');
+  // Asalin Yaren Farko: English ('en')
+  const [lang, setLang] = useState('en');
   const [step, setStep] = useState('splash'); // splash -> onboarding -> login -> register -> app
   const [pageHistory, setPageHistory] = useState(['home']);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -35,9 +36,27 @@ export default function App() {
   }, [step]);
 
   const onboardingSlides = [
-    { title: 'Barka da zuwa SMB Global Market', titleEn: 'Welcome to SMB Global Market', desc: 'Babban kasuwar e-commerce na duniya wanda ke haɗa ku da manyan kayayyaki.', descEn: 'Your premier global marketplace.', icon: '🛍️' },
-    { title: 'Isar da Sauri da Tabbaci', titleEn: 'Fast & Secure Delivery', desc: 'Muna isar da kayanku cikin amintacciyar hanya zuwa ƙofarta.', descEn: 'We deliver your products safely.', icon: '🚚' },
-    { title: 'Hanyoyin Biya Masu Sauƙi', titleEn: 'Easy & Flexible Payment', desc: 'Yi amfani da hanyoyin biya daban-daban cikin sauƙi.', descEn: 'Enjoy multiple payment options.', icon: '💳' }
+    { 
+      title: 'Welcome to SMB Global Market', 
+      titleHa: 'Barka da zuwa SMB Global Market', 
+      desc: 'Your premier global marketplace connecting you with quality products.', 
+      descHa: 'Babban kasuwar e-commerce na duniya wanda ke haɗa ku da manyan kayayyaki.', 
+      icon: '🛍️' 
+    },
+    { 
+      title: 'Fast & Secure Delivery', 
+      titleHa: 'Isar da Sauri da Tabbaci', 
+      desc: 'We deliver your packages safely and directly to your doorstep.', 
+      descHa: 'Muna isar da kayanku cikin amintacciyar xanya zuwa ƙofarta.', 
+      icon: '🚚' 
+    },
+    { 
+      title: 'Easy & Flexible Payment', 
+      titleHa: 'Hanyoyin Biya Masu Sauƙi', 
+      desc: 'Enjoy multiple seamless payment options at your convenience.', 
+      descHa: 'Yi amfani da hanyoyin biya daban-daban cikin sauƙi.', 
+      icon: '💳' 
+    }
   ];
 
   const handleLogin = (phone) => {
@@ -91,28 +110,28 @@ export default function App() {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-between p-6 max-w-md mx-auto">
         <div className="flex justify-between items-center">
-          <button onClick={() => setLang(lang === 'ha' ? 'en' : 'ha')} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold">
-            {lang === 'ha' ? '🇳🇬 HA' : '🇬🇧 EN'}
+          <button onClick={() => setLang(lang === 'en' ? 'ha' : 'en')} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold">
+            {lang === 'en' ? '🇬🇧 EN' : '🇳🇬 HA'}
           </button>
           <button onClick={() => setStep('login')} className="text-xs text-gray-400 font-bold">
-            {lang === 'ha' ? 'Tsallake' : 'Skip'}
+            {lang === 'en' ? 'Skip' : 'Tsallake'}
           </button>
         </div>
 
         <div className="my-auto text-center space-y-4">
           <div className="text-7xl mb-6 py-8 bg-emerald-50 rounded-3xl inline-block px-10 border border-emerald-100">{slide.icon}</div>
-          <h2 className="text-xl font-black text-gray-800">{lang === 'ha' ? slide.title : slide.titleEn}</h2>
-          <p className="text-xs text-gray-500 max-w-xs mx-auto">{lang === 'ha' ? slide.desc : slide.descEn}</p>
+          <h2 className="text-xl font-black text-gray-800">{lang === 'en' ? slide.title : slide.titleHa}</h2>
+          <p className="text-xs text-gray-500 max-w-xs mx-auto">{lang === 'en' ? slide.desc : slide.descHa}</p>
         </div>
 
         <div>
           {onboardingIndex < onboardingSlides.length - 1 ? (
             <button onClick={() => setOnboardingIndex(onboardingIndex + 1)} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg">
-              {lang === 'ha' ? 'Cigaba ›' : 'Next ›'}
+              {lang === 'en' ? 'Next ›' : 'Cigaba ›'}
             </button>
           ) : (
             <button onClick={() => setStep('login')} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg">
-              {lang === 'ha' ? 'Shiga / Rijista ›' : 'Get Started ›'}
+              {lang === 'en' ? 'Get Started ›' : 'Shiga / Rijista ›'}
             </button>
           )}
         </div>
