@@ -17,34 +17,24 @@ import CustomerServicePage from './pages/CustomerServicePage';
 
 export default function App() {
   const [lang, setLang] = useState('en');
-  const [step, setStep] = useState(() => localStorage.getItem('smb_step') || 'splash');
-  
-  // Maido da shafin karshe idan an yi refresh
-  const [pageHistory, setPageHistory] = useState(() => {
-    const saved = localStorage.getItem('smb_page');
-    return saved ? [saved] : ['home'];
-  });
-  
+  // KODA YAYA NE, ZAI FARA DAGA SPLASH SCREEN
+  const [step, setStep] = useState('splash');
+  const [pageHistory, setPageHistory] = useState(['home']);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userPhone, setUserPhone] = useState('09025777951');
   const [onboardingIndex, setOnboardingIndex] = useState(0);
 
   const currentPage = pageHistory[pageHistory.length - 1] || 'home';
 
-  // Kiyaye shafi lokacin Refresh
+  // Clear any existing stored login session to force flow from Splash -> Onboarding -> Login
   useEffect(() => {
-    localStorage.setItem('smb_page', currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    localStorage.setItem('smb_step', step);
-  }, [step]);
-
-  useEffect(() => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userPhone');
+    
     if (step === 'splash') {
       const timer = setTimeout(() => {
         setStep('onboarding');
-      }, 2000);
+      }, 1800);
       return () => clearTimeout(timer);
     }
   }, [step]);
@@ -86,8 +76,6 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('smb_step');
-    localStorage.removeItem('smb_page');
     setStep('login');
     setPageHistory(['home']);
   };
@@ -140,7 +128,16 @@ export default function App() {
           <p className="text-xs text-gray-500 max-w-xs mx-auto">{lang === 'en' ? slide.desc : slide.descHa}</p>
         </div>
 
-        <div>
+        <div className="space-y-3">
+          <div className="flex justify-center space-x-1.5 mb-2">
+            {onboardingSlides.map((_, idx) => (
+              <div 
+                key={idx} 
+                className={`h-1.5 rounded-full transition-all ${idx === onboardingIndex ? 'w-6 bg-emerald-800' : 'w-1.5 bg-gray-200'}`} 
+              />
+            ))}
+          </div>
+
           {onboardingIndex < onboardingSlides.length - 1 ? (
             <button onClick={() => setOnboardingIndex(onboardingIndex + 1)} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg">
               {lang === 'en' ? 'Next ›' : 'Cigaba ›'}
@@ -165,7 +162,7 @@ export default function App() {
     return <RegisterPage onRegister={handleRegister} onGoToLogin={() => setStep('login')} lang={lang} />;
   }
 
-  // 5. MAIN APPLICATION
+  // 5. MAIN APPLICATION (HOMEPAGE & OTHER PAGES)
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl">
       {currentPage === 'home' && <HomePage onNavigate={navigateTo} userPhone={userPhone} lang={lang} setLang={setLang} />}
