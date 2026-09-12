@@ -3,6 +3,7 @@ import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Header from './components/common/Header';
 import DashboardNav from './components/common/DashboardNav';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import SupportChat from './components/common/SupportChat';
 import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
 import { useAuth } from './contexts/AuthContext';
