@@ -1,18 +1,26 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, User, Bell } from 'lucide-react';
+import { ShoppingCart, Search, User, Bell, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { useState } from 'react';
+import { signOut } from '../../services/authService';
 
 export default function Header() {
   const { isAuthenticated, profile } = useAuth();
   const { items } = useCart();
   const [q, setQ] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   function onSearch(e) {
     e.preventDefault();
     if (q.trim()) navigate(`/search?q=${encodeURIComponent(q.trim())}`);
+  }
+
+  async function handleSignOut() {
+    await signOut();
+    setMenuOpen(false);
+    navigate('/');
   }
 
   return (
@@ -47,13 +55,28 @@ export default function Header() {
             )}
           </Link>
           {isAuthenticated ? (
-            <>
-              <Bell className="w-5 h-5 text-brand-navy hidden sm:block" />
-              <Link to="/profile" className="flex items-center gap-1 text-sm text-brand-navy">
+            <div className="relative">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-1 text-sm text-brand-navy">
                 <User className="w-5 h-5" />
                 <span className="hidden sm:inline">{profile?.full_name?.split(' ')[0] || 'Account'}</span>
-              </Link>
-            </>
+              </button>
+              {menuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                  <Link to="/profile" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    My Profile
+                  </Link>
+                  <Link to="/orders" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    My Orders
+                  </Link>
+                  <Link to="/addresses" onClick={() => setMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    Addresses
+                  </Link>
+                  <button onClick={handleSignOut} className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+                    <LogOut className="w-4 h-4" /> Sign out
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <Link to="/login" className="btn-primary text-sm">
               Sign in
