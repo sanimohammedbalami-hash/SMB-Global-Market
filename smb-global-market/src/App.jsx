@@ -16,15 +16,29 @@ import AddressPage from './pages/AddressPage';
 import CustomerServicePage from './pages/CustomerServicePage';
 
 export default function App() {
-  // Asalin Yaren Farko: English ('en')
   const [lang, setLang] = useState('en');
-  const [step, setStep] = useState('splash'); // splash -> onboarding -> login -> register -> app
-  const [pageHistory, setPageHistory] = useState(['home']);
+  const [step, setStep] = useState(() => localStorage.getItem('smb_step') || 'splash');
+  
+  // Maido da shafin karshe idan an yi refresh
+  const [pageHistory, setPageHistory] = useState(() => {
+    const saved = localStorage.getItem('smb_page');
+    return saved ? [saved] : ['home'];
+  });
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userPhone, setUserPhone] = useState('09025777951');
   const [onboardingIndex, setOnboardingIndex] = useState(0);
 
   const currentPage = pageHistory[pageHistory.length - 1] || 'home';
+
+  // Kiyaye shafi lokacin Refresh
+  useEffect(() => {
+    localStorage.setItem('smb_page', currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    localStorage.setItem('smb_step', step);
+  }, [step]);
 
   useEffect(() => {
     if (step === 'splash') {
@@ -47,7 +61,7 @@ export default function App() {
       title: 'Fast & Secure Delivery', 
       titleHa: 'Isar da Sauri da Tabbaci', 
       desc: 'We deliver your packages safely and directly to your doorstep.', 
-      descHa: 'Muna isar da kayanku cikin amintacciyar xanya zuwa ƙofarta.', 
+      descHa: 'Muna isar da kayanku cikin amintacciyar hanyar zuwa ƙofarta.', 
       icon: '🚚' 
     },
     { 
@@ -72,6 +86,8 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('smb_step');
+    localStorage.removeItem('smb_page');
     setStep('login');
     setPageHistory(['home']);
   };
