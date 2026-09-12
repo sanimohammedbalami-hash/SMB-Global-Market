@@ -1,183 +1,211 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function HomePage({ onNavigate, userPhone, lang, setLang }) {
+  const [activeCategory, setActiveCategory] = useState('All');
+
   const categories = [
-    { id: 'fashion', name: 'Fashion', icon: '👕', bg: 'bg-emerald-100' },
-    { id: 'beauty', name: 'Beauty', icon: '💄', bg: 'bg-pink-100' },
-    { id: 'phones', name: 'Phones', icon: '📱', bg: 'bg-blue-100' },
-    { id: 'home', name: 'Home', icon: '🛋️', bg: 'bg-yellow-100' },
-    { id: 'groceries', name: 'Groceries', icon: '🧺', bg: 'bg-orange-100' },
-    { id: 'sports', name: 'Sports', icon: '⚽', bg: 'bg-purple-100' },
-    { id: 'automotive', name: 'Automotive', icon: '🚗', bg: 'bg-red-100' },
-    { id: 'baby', name: 'Baby & Kids', icon: '🧸', bg: 'bg-teal-100' },
+    'All',
+    'Bags',
+    'Watches',
+    'Shadda',
+    'Yard',
+    'Atamfa',
+    'Lace',
+    'Shoes',
+    'Beauty',
+    'Phones',
+    'Electronics'
   ];
 
-  const featuredProducts = [
-    { id: 1, name: 'Smart Smartphone X', price: '₦120,000', discount: '-15%', icon: '📱' },
-    { id: 2, name: 'Wireless Headphones', price: '₦18,500', discount: '-20%', icon: '🎧' },
+  const products = [
+    {
+      id: 1,
+      title: 'Premium Quality Shadda (5 Yards)',
+      titleHa: 'Kyakkyawan Shadda Mai Inganci (Yardi 5)',
+      price: '₦25,000',
+      oldPrice: '₦32,000',
+      discount: '-22%',
+      badge: 'Flash Sale',
+      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&auto=format&fit=crop&q=60',
+      category: 'Shadda'
+    },
+    {
+      id: 2,
+      title: 'Luxury Gold Handbag for Ladies',
+      titleHa: 'Atsattsaren Jakar Mata Mai Kyau',
+      price: '₦12,500',
+      oldPrice: '₦16,000',
+      discount: '-20%',
+      badge: 'Top Rated',
+      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&auto=format&fit=crop&q=60',
+      category: 'Bags'
+    },
+    {
+      id: 3,
+      title: 'Designer Swiss Watch',
+      titleHa: 'Agogon Hannu Mai Kyau',
+      price: '₦18,000',
+      oldPrice: '₦22,000',
+      discount: '-18%',
+      badge: 'Best Seller',
+      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&auto=format&fit=crop&q=60',
+      category: 'Watches'
+    },
+    {
+      id: 4,
+      title: 'High Quality Atamfa Material',
+      titleHa: 'Atamfa Mai Sanyi da Inganci',
+      price: '₦8,500',
+      oldPrice: '₦11,000',
+      discount: '-22%',
+      badge: 'Hot Deals',
+      image: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?w=300&auto=format&fit=crop&q=60',
+      category: 'Atamfa'
+    }
   ];
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24 max-w-md mx-auto">
-      {/* Header na Koren gaba-daya */}
-      <div className="bg-emerald-900 text-white p-4 rounded-b-2xl shadow-lg space-y-3">
-        <div className="flex justify-between items-start">
+    <div className="bg-gray-50 min-h-screen pb-20 max-w-md mx-auto">
+      {/* 1. COMPACT TOP HEADER */}
+      <div className="bg-emerald-900 text-white p-3 space-y-2 sticky top-0 z-30 shadow-md">
+        <div className="flex justify-between items-center text-xs">
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-emerald-800/80 border border-emerald-700 rounded-full flex items-center justify-center font-bold text-sm">
-              0
-            </div>
-            <div>
-              <h1 className="text-xs font-black tracking-wide flex items-center gap-1">
-                Hello, {userPhone || '09025777951'} 👋
-              </h1>
-              <p className="text-[10px] text-emerald-200">Welcome back to SMB Global Market</p>
-            </div>
+            <span className="w-6 h-6 bg-emerald-800 rounded-full flex items-center justify-center font-bold text-[10px]">SMB</span>
+            <span className="font-semibold text-[11px]">Hello, {userPhone || '09025777951'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => setLang(lang === 'ha' ? 'en' : 'ha')}
-              className="px-2 py-0.5 bg-emerald-800 text-[10px] font-bold rounded-lg border border-emerald-700"
+              onClick={() => setLang(lang === 'en' ? 'ha' : 'en')}
+              className="bg-emerald-800 border border-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold"
             >
-              {lang === 'ha' ? '🇳🇬 HA' : '🇬🇧 EN'}
+              {lang === 'en' ? '🇳🇬 HA' : '🇬🇧 EN'}
             </button>
-            <div className="relative cursor-pointer" onClick={() => onNavigate('customer-service')}>
-              <span className="text-lg">🔔</span>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">3</span>
-            </div>
-            <div className="relative cursor-pointer" onClick={() => onNavigate('cart')}>
-              <span className="text-lg">🛒</span>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span>
-            </div>
+            <button onClick={() => onNavigate('cart')} className="relative">
+              <span className="text-sm">🛒</span>
+              <span className="absolute -top-1 -right-1 bg-red-500 text-[8px] rounded-full w-3 h-3 flex items-center justify-center font-bold">2</span>
+            </button>
           </div>
         </div>
 
-        <div className="text-[10px] text-emerald-200 flex items-center space-x-1">
-          <span>📍 Delivery Location:</span>
-          <span className="font-bold text-white">Kano, Nigeria</span>
-        </div>
-
-        {/* Search Bar */}
+        {/* Compact Search Bar */}
         <div className="relative">
           <input
             type="text"
-            placeholder="Search for products, brands, or categories..."
-            className="w-full pl-9 pr-8 py-2 bg-white text-gray-800 text-xs rounded-xl focus:outline-none shadow"
+            placeholder={lang === 'ha' ? "Binciki kayayyaki..." : "Search products, brands..."}
+            className="w-full bg-white text-gray-800 text-xs py-1.5 pl-8 pr-3 rounded-full focus:outline-none shadow-inner"
           />
-          <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
-          <span className="absolute right-3 top-2.5 text-gray-400 text-xs">🎙️</span>
+          <span className="absolute left-2.5 top-1.5 text-gray-400 text-xs">🔍</span>
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* Flash Sale Banner */}
-        <div className="bg-emerald-900 text-white p-4 rounded-2xl shadow relative overflow-hidden flex justify-between items-center">
-          <div className="space-y-1.5 z-10 max-w-[65%]">
-            <span className="bg-yellow-400 text-emerald-950 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">FLASH SALE</span>
-            <h2 className="text-xs font-black leading-tight">Big Discounts, Bigger Dreams!</h2>
-            <p className="text-[10px] text-emerald-100">Top brands. Best prices. Shop now!</p>
-            <div className="flex items-center space-x-1 pt-1 text-[10px]">
-              <span className="text-emerald-200">Ends in:</span>
-              <span className="bg-red-600 font-mono font-bold px-1.5 py-0.5 rounded">02</span>
-              <span>:</span>
-              <span className="bg-red-600 font-mono font-bold px-1.5 py-0.5 rounded">45</span>
-              <span>:</span>
-              <span className="bg-red-600 font-mono font-bold px-1.5 py-0.5 rounded">12</span>
+      {/* 2. TEMO-STYLE HORIZONTAL CATEGORIES (TEXT ONLY) */}
+      <div className="bg-white border-b border-gray-200 overflow-x-auto whitespace-nowrap scrollbar-hide px-2 py-2 flex space-x-4 text-xs font-semibold text-gray-600 sticky top-[75px] z-20 shadow-sm">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`pb-0.5 transition-all ${
+              activeCategory === cat
+                ? 'text-emerald-800 font-extrabold border-b-2 border-emerald-800 scale-105'
+                : 'hover:text-emerald-700'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* 3. COMPACT BANNER (HALF HEIGHT) */}
+      <div className="p-3">
+        <div className="bg-gradient-to-r from-emerald-900 to-emerald-700 text-white rounded-xl p-3 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="bg-amber-400 text-emerald-950 font-black text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider">Flash Sale</span>
+            <h2 className="text-xs font-extrabold mt-1">Big Discounts, Bigger Dreams!</h2>
+            <p className="text-[10px] text-emerald-200">Up to 70% Off • Limited Time</p>
+          </div>
+          <div className="text-right">
+            <div className="bg-emerald-950/60 p-1.5 rounded-lg border border-emerald-600 text-[10px] font-mono font-bold text-amber-300">
+              02 : 45 : 12
             </div>
           </div>
-          <div className="bg-yellow-400 text-emerald-950 font-black rounded-full w-16 h-16 flex flex-col items-center justify-center text-center shadow-lg transform rotate-12">
-            <span className="text-[9px]">UP TO</span>
-            <span className="text-xs leading-none">70%</span>
-            <span className="text-[8px]">OFF</span>
-          </div>
+        </div>
+      </div>
+
+      {/* 4. TEMO-STYLE BADGES & ANNOUNCEMENT */}
+      <div className="px-3 pb-2 flex items-center justify-between text-[10px] text-emerald-900 font-semibold bg-emerald-50/60 mx-3 rounded-lg p-2 border border-emerald-100">
+        <span>✓ Free shipping offer</span>
+        <span>⚡ Fast Delivery</span>
+        <span>🛡️ Safe Payments</span>
+      </div>
+
+      {/* 5. PRODUCTS GRID (FEATURED) */}
+      <div className="p-3">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-xs font-black text-gray-800 uppercase tracking-wide">
+            {lang === 'ha' ? 'Kayayyakin da ke Kasuwa' : 'Featured Products'}
+          </h3>
+          <button onClick={() => onNavigate('categories')} className="text-[10px] text-emerald-800 font-bold">
+            See All ›
+          </button>
         </div>
 
-        {/* Limited Stock Bar */}
-        <div className="bg-emerald-50 border border-emerald-100 p-2.5 rounded-xl flex justify-between items-center text-xs">
-          <div className="flex items-center space-x-2">
-            <span>🔥</span>
-            <div>
-              <p className="font-bold text-gray-800 text-[11px]">Limited Stock!</p>
-              <p className="text-[10px] text-gray-500">Popular items are selling fast. Don't miss out!</p>
-            </div>
-          </div>
-          <span className="bg-emerald-800 text-white text-[9px] font-bold px-2 py-1 rounded-lg">Only 5 left</span>
-        </div>
-
-        {/* Shop by Category */}
-        <div>
-          <div className="flex justify-between items-center mb-2.5">
-            <h3 className="text-xs font-extrabold text-gray-800">Shop by Category</h3>
-            <button onClick={() => onNavigate('categories')} className="text-[11px] font-bold text-emerald-800">
-              See All &gt;
-            </button>
-          </div>
-          <div className="grid grid-cols-4 gap-2.5 text-center">
-            {categories.map((cat) => (
-              <div
-                key={cat.id}
-                onClick={() => onNavigate('categories')}
-                className="bg-white p-2.5 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition"
-              >
-                <div className={`w-10 h-10 ${cat.bg} rounded-xl flex items-center justify-center text-xl mb-1`}>
-                  {cat.icon}
-                </div>
-                <span className="text-[10px] font-bold text-gray-700 leading-tight">{cat.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Featured Products */}
-        <div>
-          <div className="flex justify-between items-center mb-2.5">
-            <h3 className="text-xs font-extrabold text-gray-800">Featured Products</h3>
-            <button onClick={() => onNavigate('categories')} className="text-[11px] font-bold text-emerald-800">
-              See All &gt;
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {featuredProducts.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => onNavigate('details', p)}
-                className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm cursor-pointer relative"
-              >
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md z-10">
-                  {p.discount}
+        <div className="grid grid-cols-2 gap-2.5">
+          {products.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => onNavigate('details', item)}
+              className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition"
+            >
+              <div className="relative bg-gray-100 h-32 flex items-center justify-center p-2">
+                <span className="text-4xl">🛍️</span>
+                <span className="absolute top-1.5 left-1.5 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                  {item.discount}
                 </span>
-                <div className="bg-gray-50 h-28 rounded-xl flex items-center justify-center text-5xl mb-2">
-                  {p.icon}
-                </div>
-                <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{p.name}</h4>
-                <p className="text-xs font-black text-emerald-800 mt-1">{p.price}</p>
               </div>
-            ))}
-          </div>
+              <div className="p-2 space-y-1">
+                <p className="text-[11px] font-bold text-gray-800 truncate">
+                  {lang === 'ha' ? item.titleHa : item.title}
+                </p>
+                <div className="flex items-baseline space-x-1.5">
+                  <span className="text-xs font-black text-emerald-800">{item.price}</span>
+                  <span className="text-[9px] text-gray-400 line-through">{item.oldPrice}</span>
+                </div>
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="text-[8px] bg-emerald-50 text-emerald-800 font-bold px-1.5 py-0.5 rounded">
+                    {item.badge}
+                  </span>
+                  <button className="bg-emerald-800 text-white text-[10px] p-1 rounded-md">
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Bottom Nav */}
+      {/* 6. BOTTOM NAVIGATION BAR */}
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 px-4 py-2 flex justify-around items-center z-30">
         <button onClick={() => onNavigate('home')} className="flex flex-col items-center text-emerald-800 font-bold">
-          <span className="text-lg">🏠</span>
+          <span className="text-base">🏠</span>
           <span className="text-[10px]">Home</span>
         </button>
         <button onClick={() => onNavigate('categories')} className="flex flex-col items-center text-gray-400 font-medium">
-          <span className="text-lg">📁</span>
+          <span className="text-base">📁</span>
           <span className="text-[10px]">Categories</span>
         </button>
         <button onClick={() => onNavigate('cart')} className="flex flex-col items-center text-gray-400 font-medium relative">
-          <span className="text-lg">🛒</span>
+          <span className="text-base">🛒</span>
           <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span>
           <span className="text-[10px]">Cart</span>
         </button>
         <button onClick={() => onNavigate('orders')} className="flex flex-col items-center text-gray-400 font-medium relative">
-          <span className="text-lg">📦</span>
+          <span className="text-base">📦</span>
           <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">3</span>
           <span className="text-[10px]">Orders</span>
         </button>
         <button onClick={() => onNavigate('account')} className="flex flex-col items-center text-gray-400 font-medium">
-          <span className="text-lg">👤</span>
+          <span className="text-base">👤</span>
           <span className="text-[10px]">Account</span>
         </button>
       </div>
