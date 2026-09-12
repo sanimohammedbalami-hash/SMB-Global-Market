@@ -12,6 +12,7 @@ import Home from './pages/customer/Home';
 import Login from './pages/customer/Login';
 import Register from './pages/customer/Register';
 import ForgotPassword from './pages/customer/ForgotPassword';
+import ResetPassword from './pages/customer/ResetPassword';
 import Categories from './pages/customer/Categories';
 import Search from './pages/customer/Search';
 import ProductDetail from './pages/customer/ProductDetail';
@@ -135,6 +136,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/become-a-vendor" element={<BecomeAVendor />} />
         <Route path="/vendor/register" element={<VendorRegister />} />
         <Route path="/vendor/login" element={<VendorLogin />} />
