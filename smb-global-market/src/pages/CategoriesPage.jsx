@@ -11,7 +11,7 @@ function CategoriesPage({ onNavigate, onBack, lang }) {
     { id: 'Watches', name: 'Watches & Jewelry', nameHa: 'Agogo da Ado' },
     { id: 'Shoes', name: 'Shoes & Footwear', nameHa: 'Takalma' },
     { id: 'Beauty', name: 'Beauty & Cosmetics', nameHa: 'Kwalliya da Turare' },
-    { id: 'Electronics', name: 'Phones & Gadgets', nameHa: 'Wayoyi da Na'ura' },
+    { id: 'Electronics', name: 'Phones & Gadgets', nameHa: 'Wayoyi da Na-ura' },
   ];
 
   const categoryItems = {
