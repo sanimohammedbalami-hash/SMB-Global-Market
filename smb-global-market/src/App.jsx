@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Header from './components/common/Header';
-import Footer from './components/common/Footer';
 import DashboardNav from './components/common/DashboardNav';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
+import { useAuth } from './contexts/AuthContext';
 
 import Home from './pages/customer/Home';
 import Login from './pages/customer/Login';
@@ -68,7 +68,6 @@ function VendorLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <Footer />
     </div>
   );
 }
@@ -91,6 +90,15 @@ function AdminLayout() {
       </main>
     </div>
   );
+}
+
+// Blocks unauthenticated visitors from every customer-facing page except
+// login/register/forgot-password — the marketplace itself is members-only.
+function RequireAuthForCustomerArea({ children }) {
+  const { session, loading } = useAuth();
+  if (loading) return <div className="p-8 text-center text-gray-500">Loading...</div>;
+  if (!session) return <Navigate to="/login" replace />;
+  return children;
 }
 
 export default function App() {
@@ -124,17 +132,20 @@ export default function App() {
 
   return (
     <Routes>
-      <Route element={<CustomerLayout />}>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/vendor/register" element={<VendorRegister />} />
+      <Route path="/vendor/login" element={<VendorLogin />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+
+      <Route element={<RequireAuthForCustomerArea><CustomerLayout /></RequireAuthForCustomerArea>}>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/search" element={<Search />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/become-a-vendor" element={<BecomeAVendor />} />
-
         <Route path="/checkout" element={<ProtectedRoute allowedRoles={['customer']}><Checkout /></ProtectedRoute>} />
         <Route path="/order-success" element={<ProtectedRoute allowedRoles={['customer']}><OrderSuccess /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute allowedRoles={['customer']}><Orders /></ProtectedRoute>} />
@@ -143,8 +154,6 @@ export default function App() {
         <Route path="/addresses" element={<ProtectedRoute allowedRoles={['customer']}><Addresses /></ProtectedRoute>} />
       </Route>
 
-      <Route path="/vendor/register" element={<VendorRegister />} />
-      <Route path="/vendor/login" element={<VendorLogin />} />
       <Route element={<ProtectedRoute allowedRoles={['vendor']}><VendorLayout /></ProtectedRoute>}>
         <Route path="/vendor/dashboard" element={<VendorDashboard />} />
         <Route path="/vendor/products" element={<VendorProducts />} />
@@ -153,7 +162,6 @@ export default function App() {
         <Route path="/vendor/profile" element={<VendorProfile />} />
       </Route>
 
-      <Route path="/admin/login" element={<AdminLogin />} />
       <Route element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/customers" element={<AdminCustomers />} />
