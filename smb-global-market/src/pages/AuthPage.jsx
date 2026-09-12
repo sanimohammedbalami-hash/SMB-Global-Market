@@ -2,21 +2,26 @@ import React from 'react';
 
 function AuthPage({ onLogin, lang, setLang }) {
   return (
-    <div className="p-6 flex flex-col justify-center min-h-screen bg-emerald-900 text-white text-center">
-      <h1 className="text-2xl font-bold mb-2">SMB Global Market</h1>
-      <p className="text-xs text-emerald-200 mb-6">{lang === 'ha' ? 'Barka da zuwa! Da fatan za ka shiga asusunka.' : 'Welcome! Please sign in.'}</p>
-      <button
-        onClick={onLogin}
-        className="bg-white text-emerald-900 font-bold py-3 px-6 rounded-xl shadow-lg text-sm mb-4"
-      >
-        {lang === 'ha' ? 'Shiga (Login)' : 'Login'}
-      </button>
-      <button
-        onClick={() => setLang(lang === 'en' ? 'ha' : 'en')}
-        className="text-xs text-emerald-200 underline"
-      >
-        {lang === 'en' ? 'Sauya Harshe zuwa Hausa' : 'Switch to English'}
-      </button>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center p-6 max-w-md mx-auto">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+        <div className="text-center">
+          <div className="w-14 h-14 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-2">
+            🛍️
+          </div>
+          <h2 className="text-lg font-black text-gray-800">
+            {lang === 'ha' ? 'Shiga SMB Global Market' : 'Sign in to SMB Global Market'}
+          </h2>
+        </div>
+
+        <div className="space-y-3">
+          <input type="text" placeholder="Phone / Email" className="w-full border rounded-xl p-2.5 text-xs" />
+          <input type="password" placeholder="Password" className="w-full border rounded-xl p-2.5 text-xs" />
+        </div>
+
+        <button onClick={onLogin} className="w-full bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs shadow-md">
+          {lang === 'ha' ? 'Shiga (Login)' : 'Sign In'}
+        </button>
+      </div>
     </div>
   );
 }
