@@ -93,8 +93,6 @@ function AdminLayout() {
   );
 }
 
-// Blocks unauthenticated visitors from every customer-facing page except
-// login/register/forgot-password — the marketplace itself is members-only.
 function RequireAuthForCustomerArea({ children }) {
   const { session, loading } = useAuth();
   if (loading) return <div className="p-8 text-center text-gray-500">Loading...</div>;
@@ -132,48 +130,51 @@ export default function App() {
   }
 
   return (
-<Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/become-a-vendor" element={<BecomeAVendor />} />
-      <Route path="/vendor/register" element={<VendorRegister />} />
-      <Route path="/vendor/login" element={<VendorLogin />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/become-a-vendor" element={<BecomeAVendor />} />
+        <Route path="/vendor/register" element={<VendorRegister />} />
+        <Route path="/vendor/login" element={<VendorLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-      <Route element={<RequireAuthForCustomerArea><CustomerLayout /></RequireAuthForCustomerArea>}>
-        <Route path="/" element={<Home />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<ProtectedRoute allowedRoles={['customer']}><Checkout /></ProtectedRoute>} />
-        <Route path="/order-success" element={<ProtectedRoute allowedRoles={['customer']}><OrderSuccess /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute allowedRoles={['customer']}><Orders /></ProtectedRoute>} />
-        <Route path="/orders/:id" element={<ProtectedRoute allowedRoles={['customer']}><OrderDetail /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/addresses" element={<ProtectedRoute allowedRoles={['customer']}><Addresses /></ProtectedRoute>} />
-      </Route>
+        <Route element={<RequireAuthForCustomerArea><CustomerLayout /></RequireAuthForCustomerArea>}>
+          <Route path="/" element={<Home />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<ProtectedRoute allowedRoles={['customer']}><Checkout /></ProtectedRoute>} />
+          <Route path="/order-success" element={<ProtectedRoute allowedRoles={['customer']}><OrderSuccess /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute allowedRoles={['customer']}><Orders /></ProtectedRoute>} />
+          <Route path="/orders/:id" element={<ProtectedRoute allowedRoles={['customer']}><OrderDetail /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/addresses" element={<ProtectedRoute allowedRoles={['customer']}><Addresses /></ProtectedRoute>} />
+        </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={['vendor']}><VendorLayout /></ProtectedRoute>}>
-        <Route path="/vendor/dashboard" element={<VendorDashboard />} />
-        <Route path="/vendor/products" element={<VendorProducts />} />
-        <Route path="/vendor/orders" element={<VendorOrders />} />
-        <Route path="/vendor/earnings" element={<VendorEarnings />} />
-        <Route path="/vendor/profile" element={<VendorProfile />} />
-      </Route>
+        <Route element={<ProtectedRoute allowedRoles={['vendor']}><VendorLayout /></ProtectedRoute>}>
+          <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+          <Route path="/vendor/products" element={<VendorProducts />} />
+          <Route path="/vendor/orders" element={<VendorOrders />} />
+          <Route path="/vendor/earnings" element={<VendorEarnings />} />
+          <Route path="/vendor/profile" element={<VendorProfile />} />
+        </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/customers" element={<AdminCustomers />} />
-        <Route path="/admin/vendors" element={<AdminVendors />} />
-        <Route path="/admin/products" element={<AdminProducts />} />
-        <Route path="/admin/orders" element={<AdminOrders />} />
-        <Route path="/admin/payments" element={<AdminPayments />} />
-        <Route path="/admin/settings" element={<AdminSettings />} />
-      </Route>
+        <Route element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/vendors" element={<AdminVendors />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/payments" element={<AdminPayments />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
+        </Route>
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <SupportChat />
+    </>
   );
 }
