@@ -33,7 +33,7 @@ export default function VendorRegister() {
         business_address: form.businessAddress,
         description: form.description
       });
-      navigate('/vendor/dashboard');
+      navigate('/vendor/login');
     } catch (err) {
       setError(err.message);
     } finally {
