@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CartPage from './pages/CartPage';
 import FavoritesPage from './pages/FavoritesPage';
@@ -15,44 +17,58 @@ import CustomerServicePage from './pages/CustomerServicePage';
 
 export default function App() {
   const [lang, setLang] = useState('ha');
-  const [step, setStep] = useState('splash'); 
-  const [currentPage, setCurrentPage] = useState('home');
+  const [step, setStep] = useState('splash'); // splash -> onboarding -> login -> register -> app
+  const [pageHistory, setPageHistory] = useState(['home']);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [userPhone, setUserPhone] = useState('09025777951');
   const [onboardingIndex, setOnboardingIndex] = useState(0);
+
+  const currentPage = pageHistory[pageHistory.length - 1] || 'home';
 
   useEffect(() => {
     if (step === 'splash') {
       const timer = setTimeout(() => {
-        const savedAuth = localStorage.getItem('smb_authenticated');
-        if (savedAuth === 'true') {
-          setStep('app');
-        } else {
-          setStep('onboarding');
-        }
+        setStep('onboarding');
       }, 2000);
       return () => clearTimeout(timer);
     }
   }, [step]);
 
   const onboardingSlides = [
-    { title: 'Barka da zuwa SMB Global Market', titleEn: 'Welcome to SMB Global Market', desc: 'Babban kasuwar e-commerce na duniya.', descEn: 'Your premier global marketplace.', icon: '🛍️' },
-    { title: 'Isar da Sauri da Tabbaci', titleEn: 'Fast & Secure Delivery', desc: 'Muna isar da kayanku cikin amintacciyar hanya.', descEn: 'We deliver your products safely.', icon: '🚚' },
-    { title: 'Hanyoyin Biya Masu Sauƙi', titleEn: 'Easy Payment', desc: 'Yi amfani da hanyoyin biya daban-daban.', descEn: 'Enjoy multiple payment options.', icon: '💳' }
+    { title: 'Barka da zuwa SMB Global Market', titleEn: 'Welcome to SMB Global Market', desc: 'Babban kasuwar e-commerce na duniya wanda ke haɗa ku da manyan kayayyaki.', descEn: 'Your premier global marketplace.', icon: '🛍️' },
+    { title: 'Isar da Sauri da Tabbaci', titleEn: 'Fast & Secure Delivery', desc: 'Muna isar da kayanku cikin amintacciyar hanya zuwa ƙofarta.', descEn: 'We deliver your products safely.', icon: '🚚' },
+    { title: 'Hanyoyin Biya Masu Sauƙi', titleEn: 'Easy & Flexible Payment', desc: 'Yi amfani da hanyoyin biya daban-daban cikin sauƙi.', descEn: 'Enjoy multiple payment options.', icon: '💳' }
   ];
 
-  const handleLogin = () => {
-    localStorage.setItem('smb_authenticated', 'true');
+  const handleLogin = (phone) => {
+    setUserPhone(phone || '09025777951');
     setStep('app');
+    setPageHistory(['home']);
+  };
+
+  const handleRegister = (phone) => {
+    setUserPhone(phone || '09025777951');
+    setStep('app');
+    setPageHistory(['home']);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('smb_authenticated');
-    setStep('auth');
+    setStep('login');
+    setPageHistory(['home']);
   };
 
   const navigateTo = (page, product = null) => {
     if (product) setSelectedProduct(product);
-    setCurrentPage(page);
+    setPageHistory((prev) => [...prev, page]);
+    window.scrollTo(0, 0);
+  };
+
+  const goBack = () => {
+    if (pageHistory.length > 1) {
+      setPageHistory((prev) => prev.slice(0, prev.length - 1));
+    } else {
+      setPageHistory(['home']);
+    }
     window.scrollTo(0, 0);
   };
 
@@ -78,7 +94,7 @@ export default function App() {
           <button onClick={() => setLang(lang === 'ha' ? 'en' : 'ha')} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold">
             {lang === 'ha' ? '🇳🇬 HA' : '🇬🇧 EN'}
           </button>
-          <button onClick={() => setStep('auth')} className="text-xs text-gray-400 font-bold">
+          <button onClick={() => setStep('login')} className="text-xs text-gray-400 font-bold">
             {lang === 'ha' ? 'Tsallake' : 'Skip'}
           </button>
         </div>
@@ -91,12 +107,12 @@ export default function App() {
 
         <div>
           {onboardingIndex < onboardingSlides.length - 1 ? (
-            <button onClick={() => setOnboardingIndex(onboardingIndex + 1)} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs">
+            <button onClick={() => setOnboardingIndex(onboardingIndex + 1)} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg">
               {lang === 'ha' ? 'Cigaba ›' : 'Next ›'}
             </button>
           ) : (
-            <button onClick={() => setStep('auth')} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs">
-              {lang === 'ha' ? 'Fara Amfani ›' : 'Get Started ›'}
+            <button onClick={() => setStep('login')} className="w-full bg-emerald-800 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg">
+              {lang === 'ha' ? 'Shiga / Rijista ›' : 'Get Started ›'}
             </button>
           )}
         </div>
@@ -104,36 +120,32 @@ export default function App() {
     );
   }
 
-  // 3. AUTH SCREEN
-  if (step === 'auth') {
-    return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center p-6 max-w-md mx-auto">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border space-y-4 text-center">
-          <h2 className="text-lg font-black text-gray-800">{lang === 'ha' ? 'Shiga SMB Global Market' : 'Sign in'}</h2>
-          <button onClick={handleLogin} className="w-full bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs">
-            {lang === 'ha' ? 'Shiga (Login)' : 'Sign In'}
-          </button>
-        </div>
-      </div>
-    );
+  // 3. LOGIN PAGE
+  if (step === 'login') {
+    return <LoginPage onLogin={handleLogin} onGoToRegister={() => setStep('register')} lang={lang} />;
   }
 
-  // 4. ALL APPLICATION PAGES
+  // 4. REGISTER PAGE
+  if (step === 'register') {
+    return <RegisterPage onRegister={handleRegister} onGoToLogin={() => setStep('login')} lang={lang} />;
+  }
+
+  // 5. MAIN APPLICATION
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl">
-      {currentPage === 'home' && <HomePage onNavigate={navigateTo} lang={lang} setLang={setLang} />}
-      {currentPage === 'categories' && <CategoriesPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'cart' && <CartPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'favorites' && <FavoritesPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'account' && <AccountPage onNavigate={navigateTo} onLogout={handleLogout} lang={lang} />}
-      {currentPage === 'details' && <ProductDetailsPage product={selectedProduct} onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'checkout' && <CheckoutPage onNavigate={navigateTo} lang={lang} />}
+      {currentPage === 'home' && <HomePage onNavigate={navigateTo} userPhone={userPhone} lang={lang} setLang={setLang} />}
+      {currentPage === 'categories' && <CategoriesPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'cart' && <CartPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'favorites' && <FavoritesPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'account' && <AccountPage onNavigate={navigateTo} onBack={goBack} onLogout={handleLogout} userPhone={userPhone} lang={lang} />}
+      {currentPage === 'details' && <ProductDetailsPage product={selectedProduct} onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'checkout' && <CheckoutPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
       {currentPage === 'order-success' && <OrderSuccessPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'orders' && <OrdersPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'track' && <TrackOrderPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'edit-profile' && <EditProfilePage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'address' && <AddressPage onNavigate={navigateTo} lang={lang} />}
-      {currentPage === 'customer-service' && <CustomerServicePage onNavigate={navigateTo} lang={lang} />}
+      {currentPage === 'orders' && <OrdersPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'track' && <TrackOrderPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'edit-profile' && <EditProfilePage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'address' && <AddressPage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
+      {currentPage === 'customer-service' && <CustomerServicePage onNavigate={navigateTo} onBack={goBack} lang={lang} />}
     </div>
   );
 }
