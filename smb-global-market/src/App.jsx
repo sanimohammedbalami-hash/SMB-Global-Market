@@ -95,12 +95,19 @@ function AdminLayout() {
 }
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('smb_splash_seen'));
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('smb_onboarded'));
   const [lang, setLang] = useState('en');
 
   if (showSplash) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+    return (
+      <SplashScreen
+        onFinish={() => {
+          sessionStorage.setItem('smb_splash_seen', 'true');
+          setShowSplash(false);
+        }}
+      />
+    );
   }
 
   if (showOnboarding) {
