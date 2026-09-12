@@ -1,92 +1,96 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getFeaturedProducts, getCategories } from '../../services/productService';
-import { getApprovedVendors } from '../../services/vendorService';
+import { Search, Truck, RotateCcw, Shield } from 'lucide-react';
+import { getFeaturedProducts } from '../../services/productService';
 import ProductCard from '../../components/customer/ProductCard';
+import BottomNav from '../../components/common/BottomNav';
+
+const CATEGORIES = ['All', 'Electronics', 'Shadda', 'Atamfa/Lace', 'Shoes', 'Watch', 'Men', 'Bags', 'Beauty'];
 
 export default function Home() {
-  const [state, setState] = useState({ loading: true, error: null, products: [], categories: [], vendors: [] });
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
-    (async () => {
-      try {
-        const [products, categories, vendors] = await Promise.all([
-          getFeaturedProducts(12),
-          getCategories(),
-          getApprovedVendors(8)
-        ]);
-        setState({ loading: false, error: null, products, categories, vendors });
-      } catch (e) {
-        setState({ loading: false, error: e.message, products: [], categories: [], vendors: [] });
-      }
-    })();
+    getFeaturedProducts(20)
+      .then(setProducts)
+      .finally(() => setLoading(false));
   }, []);
 
   return (
-    <div>
-      <section className="bg-gradient-to-br from-brand-navy to-brand-green text-white">
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">Discover. Shop. Grow.</h1>
-          <p className="max-w-xl mx-auto text-white/90 mb-8">
-            Find quality products from trusted sellers across the SMB Global Market marketplace.
-          </p>
-          <div className="flex justify-center gap-3 flex-wrap">
-            <Link to="/categories" className="btn-primary bg-white text-brand-green hover:bg-gray-100">Shop Now</Link>
-            <Link to="/categories" className="btn-secondary bg-transparent border-white text-white hover:bg-white/10">
-              Explore Categories
-            </Link>
-          </div>
+    <div className="bg-gray-50 min-h-screen pb-16">
+      <div className="bg-white px-4 py-3 sticky top-0 z-30 border-b border-gray-100">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input className="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-full text-sm outline-none" placeholder="Search products..." />
         </div>
-      </section>
+      </div>
 
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <h2 className="text-lg font-semibold mb-4">Categories</h2>
-        {state.loading ? (
-          <p className="text-gray-400 text-sm">Loading categories...</p>
-        ) : state.categories.length === 0 ? (
-          <p className="text-gray-400 text-sm">No categories yet. An admin can add some from /admin/products.</p>
-        ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3">
-            {state.categories.map((c) => (
-              <Link key={c.id} to={`/categories?cat=${c.id}`} className="card p-3 text-center text-sm hover:shadow-md">
-                {c.name}
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
+      <div className="bg-white px-4 py-2 flex gap-2 overflow-x-auto sticky top-[57px] z-20 border-b border-gray-100">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium ${
+              activeCategory === cat ? 'bg-brand-green text-white' : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <h2 className="text-lg font-semibold mb-4">Featured Products</h2>
-        {state.error && <p className="text-red-500 text-sm">Couldn't load products: {state.error}</p>}
-        {state.loading ? (
-          <p className="text-gray-400 text-sm">Loading products...</p>
-        ) : state.products.length === 0 ? (
-          <p className="text-gray-400 text-sm">No published products yet.</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {state.products.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
-      </section>
+      <div className="grid grid-cols-2 gap-px bg-gray-100 mt-2 text-center">
+        <div className="bg-white py-3 flex flex-col items-center gap-1">
+          <Truck className="w-5 h-5 text-brand-green" />
+          <span className="text-xs font-medium text-brand-navy">Fast Delivery</span>
+        </div>
+        <div className="bg-white py-3 flex flex-col items-center gap-1">
+          <RotateCcw className="w-5 h-5 text-brand-green" />
+          <span className="text-xs font-medium text-brand-navy">Easy Returns</span>
+        </div>
+      </div>
 
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <h2 className="text-lg font-semibold mb-4">Top Vendors</h2>
-        {!state.loading && state.vendors.length === 0 ? (
-          <p className="text-gray-400 text-sm">No approved vendors yet.</p>
+      <div className="bg-white mt-2 px-4 py-3 flex items-center gap-2">
+        <Shield className="w-5 h-5 text-brand-green" />
+        <span className="text-sm text-brand-navy font-medium flex-1">Why choose SMB Global Market?</span>
+        <span className="text-xs text-brand-green">Secure Payments &gt;</span>
+      </div>
+
+      <div className="mt-2 px-4">
+        <h2 className="text-sm font-semibold text-brand-navy mb-2">🔥 Offer Deals</h2>
+        {loading ? (
+          <p className="text-gray-400 text-sm">Loading...</p>
+        ) : products.length === 0 ? (
+          <p className="text-gray-400 text-sm">No deals yet.</p>
         ) : (
-          <div className="flex gap-4 overflow-x-auto">
-            {state.vendors.map((v) => (
-              <div key={v.id} className="card p-4 min-w-[160px] text-center">
-                <div className="w-14 h-14 rounded-full bg-gray-100 mx-auto mb-2" />
-                <p className="text-sm font-medium truncate">{v.business_name}</p>
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {products.slice(0, 6).map((p) => (
+              <div key={p.id} className="min-w-[130px]">
+                <ProductCard product={p} />
               </div>
             ))}
           </div>
         )}
-      </section>
+      </div>
+
+      <div className="mt-4 px-4">
+        <h2 className="text-sm font-semibold text-brand-navy mb-2">All Products</h2>
+        {loading ? (
+          <p className="text-gray-400 text-sm">Loading...</p>
+        ) : products.length === 0 ? (
+          <p className="text-gray-400 text-sm">No published products yet.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <BottomNav />
     </div>
   );
 }
