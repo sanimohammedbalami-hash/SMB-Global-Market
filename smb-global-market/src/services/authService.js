@@ -1,20 +1,12 @@
 import { supabase } from '../lib/supabaseClient';
 
 export async function signUp({ email, password, fullName, role = 'customer' }) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName, role } }
+  });
   if (error) throw error;
-
-  // Create the profile row. role is fixed at signup; changing it later
-  // requires an admin (see RLS policy profiles_update_own_no_role_change).
-  if (data.user) {
-    const { error: profileErr } = await supabase.from('profiles').insert({
-      user_id: data.user.id,
-      email,
-      full_name: fullName,
-      role
-    });
-    if (profileErr) throw profileErr;
-  }
   return data;
 }
 
