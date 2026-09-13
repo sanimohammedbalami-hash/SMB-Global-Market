@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { signUp } from '../../services/authService';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function VendorRegister() {
   const [form, setForm] = useState({
@@ -19,16 +20,15 @@ export default function VendorRegister() {
     setError(null);
     setSubmitting(true);
     try {
-      // Store the business details in the user's auth metadata so we can
-      // finish creating the vendor row after they confirm their email
-      // and log in for the first time (see VendorLogin.jsx).
       await signUp({
         email: form.email,
         password: form.password,
         fullName: form.fullName,
         role: 'vendor'
       });
-      localStorage.setItem('smb_pending_vendor', JSON.stringify({
+
+      const { error: pendingErr } = await supabase.from('pending_vendor_applications').insert({
+        email: form.email,
         business_name: form.businessName,
         business_category: form.businessCategory,
         country: form.country,
@@ -36,7 +36,9 @@ export default function VendorRegister() {
         city: form.city,
         business_address: form.businessAddress,
         description: form.description
-      }));
+      });
+      if (pendingErr) throw pendingErr;
+
       setDone(true);
     } catch (err) {
       setError(err.message);
@@ -50,7 +52,7 @@ export default function VendorRegister() {
       <div className="max-w-sm mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-3">Check your email</h1>
         <p className="text-gray-600 text-sm">
-          We've sent a confirmation link to <strong>{form.email}</strong>. Confirm your email, then sign in at the vendor login page to finish setting up your business — good to go!
+          We've sent a confirmation link to <strong>{form.email}</strong>. Confirm your email, then go to the vendor login page to finish setting up your business — good to go!
         </p>
       </div>
     );
