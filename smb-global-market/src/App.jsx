@@ -4,6 +4,7 @@ import Header from './components/common/Header';
 import DashboardNav from './components/common/DashboardNav';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import SupportChat from './components/common/SupportChat';
+import CheckoutButton from './components/common/CheckoutButton';
 import SplashScreen from './pages/SplashScreen';
 import OnboardingScreen from './pages/OnboardingScreen';
 import { useAuth } from './contexts/AuthContext';
@@ -48,6 +49,9 @@ function CustomerLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <div style={{ textAlign: 'center', margin: '15px 0' }}>
+        <CheckoutButton amount={5000} email="customer@example.com" />
+      </div>
       <main className="flex-1">
         <Outlet />
       </main>
