@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, Truck, RotateCcw, Shield, Gift } from 'lucide-react';
+import { Search, Truck, RotateCcw, Shield } from 'lucide-react';
 import { getFeaturedProducts } from '../../services/productService';
 import ProductCard from '../../components/customer/ProductCard';
 import BottomNav from '../../components/common/BottomNav';
@@ -64,16 +64,14 @@ export default function Home() {
         <span className="text-xs text-brand-green whitespace-nowrap">Secure Payments &gt;</span>
       </div>
 
-      {!loading && filteredProducts.length === 0 && (
-        <div className="bg-white mt-2 px-4 py-3 flex items-center justify-end gap-2">
-          <Gift className="w-4 h-4 text-gray-300" />
-          <span className="text-xs text-gray-400">No published products yet.</span>
-        </div>
-      )}
-
       {activeCategory === 'All' && (
         <div className="mt-2 px-4">
-          <h2 className="text-sm font-semibold text-brand-navy mb-2">🔥 Offer Deals</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-semibold text-brand-navy">🔥 Offer Deals</h2>
+            {!loading && products.length === 0 && (
+              <span className="text-xs text-gray-400">No published products yet.</span>
+            )}
+          </div>
           {loading ? (
             <p className="text-gray-400 text-sm">Loading...</p>
           ) : products.length === 0 ? null : (
@@ -94,7 +92,9 @@ export default function Home() {
         </h2>
         {loading ? (
           <p className="text-gray-400 text-sm">Loading...</p>
-        ) : filteredProducts.length === 0 ? null : (
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-gray-400 text-sm">No products in this category yet.</p>
+        ) : (
           <div className="grid grid-cols-2 gap-3">
             {filteredProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
