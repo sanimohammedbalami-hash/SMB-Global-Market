@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signIn, getCurrentProfile } from '../../services/authService';
 import { getVendorByProfileId, registerVendor } from '../../services/vendorService';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function VendorLogin() {
   const [email, setEmail] = useState('');
@@ -24,14 +25,26 @@ export default function VendorLogin() {
 
       let vendor = await getVendorByProfileId(profile.id);
 
-      // First login after email confirmation: finish creating the vendor
-      // row from the business details saved at registration time.
       if (!vendor) {
-        const pendingRaw = localStorage.getItem('smb_pending_vendor');
-        if (!pendingRaw) throw new Error('No pending vendor application found for this account.');
-        const pendingDetails = JSON.parse(pendingRaw);
-        vendor = await registerVendor(profile.id, pendingDetails);
-        localStorage.removeItem('smb_pending_vendor');
+        const { data: pending, error: pendingErr } = await supabase
+          .from('pending_vendor_applications')
+          .select('*')
+          .eq('email', email)
+          .maybeSingle();
+        if (pendingErr) throw pendingErr;
+        if (!pending) throw new Error('No pending vendor application found for this account.');
+
+        vendor = await registerVendor(profile.id, {
+          business_name: pending.business_name,
+          business_category: pending.business_category,
+          country: pending.country,
+          state: pending.state,
+          city: pending.city,
+          business_address: pending.business_address,
+          description: pending.description
+        });
+
+        await supabase.from('pending_vendor_applications').delete().eq('email', email);
       }
 
       if (vendor.status === 'pending') return setPendingNotice('Your vendor application is still under review.');
