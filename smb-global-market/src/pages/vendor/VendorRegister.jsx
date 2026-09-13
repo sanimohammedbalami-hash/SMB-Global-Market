@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { signUp } from '../../services/authService';
-import { getCurrentProfile } from '../../services/authService';
-import { registerVendor } from '../../services/vendorService';
 
 export default function VendorRegister() {
   const [form, setForm] = useState({
@@ -11,7 +8,7 @@ export default function VendorRegister() {
   });
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate();
+  const [done, setDone] = useState(false);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -22,9 +19,16 @@ export default function VendorRegister() {
     setError(null);
     setSubmitting(true);
     try {
-      await signUp({ email: form.email, password: form.password, fullName: form.fullName, role: 'vendor' });
-      const profile = await getCurrentProfile();
-      await registerVendor(profile.id, {
+      // Store the business details in the user's auth metadata so we can
+      // finish creating the vendor row after they confirm their email
+      // and log in for the first time (see VendorLogin.jsx).
+      await signUp({
+        email: form.email,
+        password: form.password,
+        fullName: form.fullName,
+        role: 'vendor'
+      });
+      localStorage.setItem('smb_pending_vendor', JSON.stringify({
         business_name: form.businessName,
         business_category: form.businessCategory,
         country: form.country,
@@ -32,13 +36,24 @@ export default function VendorRegister() {
         city: form.city,
         business_address: form.businessAddress,
         description: form.description
-      });
-      navigate('/vendor/login');
+      }));
+      setDone(true);
     } catch (err) {
       setError(err.message);
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (done) {
+    return (
+      <div className="max-w-sm mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-3">Check your email</h1>
+        <p className="text-gray-600 text-sm">
+          We've sent a confirmation link to <strong>{form.email}</strong>. Confirm your email, then sign in at the vendor login page to finish setting up your business — good to go!
+        </p>
+      </div>
+    );
   }
 
   return (
