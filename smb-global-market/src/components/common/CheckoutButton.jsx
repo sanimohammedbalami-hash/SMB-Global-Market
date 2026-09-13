@@ -6,7 +6,7 @@ const CheckoutButton = ({ amount = 5000, email = "customer@example.com" }) => {
     reference: (new Date()).getTime().toString(),
     email: email,
     amount: amount * 100,
-    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+    publicKey: 'Pk_test_c4e59b53d1c0b673c1adc4c717c2302983dc4474',
   };
 
   const onSuccess = (reference) => {
@@ -21,7 +21,7 @@ const CheckoutButton = ({ amount = 5000, email = "customer@example.com" }) => {
 
   return (
     <button
-      onClick={() => initializePayment(onSuccess, onClose)}
+      onClick={() => initializePayment({ onSuccess, onClose })}
       style={{
         backgroundColor: '#09A5DB',
         color: '#ffffff',
@@ -40,4 +40,3 @@ const CheckoutButton = ({ amount = 5000, email = "customer@example.com" }) => {
 };
 
 export default CheckoutButton;
-
