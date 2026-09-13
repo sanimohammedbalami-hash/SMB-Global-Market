@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signIn, getCurrentProfile } from '../../services/authService';
-import { getVendorByProfileId } from '../../services/vendorService';
+import { getVendorByProfileId, registerVendor } from '../../services/vendorService';
 
 export default function VendorLogin() {
   const [email, setEmail] = useState('');
@@ -19,9 +19,21 @@ export default function VendorLogin() {
     try {
       await signIn({ email, password });
       const profile = await getCurrentProfile();
+      if (!profile) throw new Error('Please confirm your email before signing in.');
       if (profile.role !== 'vendor') throw new Error('This account is not registered as a vendor.');
-      const vendor = await getVendorByProfileId(profile.id);
-      if (!vendor) throw new Error('No vendor profile found for this account.');
+
+      let vendor = await getVendorByProfileId(profile.id);
+
+      // First login after email confirmation: finish creating the vendor
+      // row from the business details saved at registration time.
+      if (!vendor) {
+        const pendingRaw = localStorage.getItem('smb_pending_vendor');
+        if (!pendingRaw) throw new Error('No pending vendor application found for this account.');
+        const pendingDetails = JSON.parse(pendingRaw);
+        vendor = await registerVendor(profile.id, pendingDetails);
+        localStorage.removeItem('smb_pending_vendor');
+      }
+
       if (vendor.status === 'pending') return setPendingNotice('Your vendor application is still under review.');
       if (vendor.status === 'rejected') return setPendingNotice('Your vendor application was not approved.' + (vendor.rejection_reason ? ` Reason: ${vendor.rejection_reason}` : ''));
       if (vendor.status === 'suspended') return setPendingNotice('Your vendor account is currently suspended.');
