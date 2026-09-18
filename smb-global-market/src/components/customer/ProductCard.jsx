@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
 
 export default function ProductCard({ product }) {
+  const rate = useExchangeRate();
   const image = product.product_images?.sort((a, b) => a.sort_order - b.sort_order)[0]?.url;
   const outOfStock = (product.inventory?.quantity ?? 0) <= 0;
 
@@ -18,11 +20,11 @@ export default function ProductCard({ product }) {
         <h3 className="font-medium text-brand-navy truncate">{product.name}</h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="font-semibold text-brand-green">
-            {product.currency} {Number(product.price).toLocaleString()}
+            ${ngnToUsd(product.price, rate)}
           </span>
           {product.compare_at_price && (
             <span className="text-xs text-gray-400 line-through">
-              {product.currency} {Number(product.compare_at_price).toLocaleString()}
+              ${ngnToUsd(product.compare_at_price, rate)}
             </span>
           )}
         </div>
