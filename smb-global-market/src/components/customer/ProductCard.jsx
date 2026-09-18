@@ -26,9 +26,8 @@ export default function ProductCard({ product }) {
             <span className="text-xs text-gray-400 line-through ml-2">
               ${ngnToUsd(product.compare_at_price, rate)}
             </span>
+      <p className="text-xs text-gray-600 font-medium mt-0.5">Est. ₦{Number(product.price).toLocaleString()}</p>
           )}
-          <p className="text-[10px] text-gray-400">Est. ₦{Number(product.price).toLocaleString()}</p>
-        </div>
         {outOfStock && <span className="text-xs text-red-500">Out of stock</span>}
       </div>
     </Link>
