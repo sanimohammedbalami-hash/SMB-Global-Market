@@ -12,15 +12,14 @@ export default function AdminSettings() {
   async function handleSave(e) {
     e.preventDefault();
     setMessage(null);
-    // Only a profile with role='admin' can write here — enforced by the
-    // platform_settings_admin_write RLS policy, not just this page.
     const { error } = await supabase
       .from('platform_settings')
       .update({
         marketplace_name: settings.marketplace_name,
         commission_rate: settings.commission_rate,
         default_delivery_fee: settings.default_delivery_fee,
-        default_currency: settings.default_currency
+        default_currency: settings.default_currency,
+        usd_to_ngn_rate: settings.usd_to_ngn_rate
       })
       .eq('id', 1);
     setMessage(error ? error.message : 'Settings saved.');
@@ -43,6 +42,9 @@ export default function AdminSettings() {
 
         <label className="text-sm text-gray-600">Default currency</label>
         <input className="input" value={settings.default_currency} onChange={(e) => setSettings({ ...settings, default_currency: e.target.value })} />
+
+        <label className="text-sm text-gray-600">USD to NGN exchange rate (used to display prices in $)</label>
+        <input className="input" type="number" step="0.01" value={settings.usd_to_ngn_rate} onChange={(e) => setSettings({ ...settings, usd_to_ngn_rate: e.target.value })} />
 
         {message && <p className="text-sm text-gray-600">{message}</p>}
         <button className="btn-primary w-full">Save settings</button>
