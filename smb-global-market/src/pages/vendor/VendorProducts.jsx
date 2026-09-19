@@ -45,9 +45,13 @@ export default function VendorProducts() {
     setError(null);
     setUploading(true);
     try {
+      // Mun raba farashin da Naira da aka saka da 1320 domin ya zama USD a Supabase database
+      const priceInNgn = Number(form.price);
+      const priceInUsd = priceInNgn / 1320;
+
       const created = await createProduct(vendor.id, {
         name: form.name,
-        price: Number(form.price),
+        price: Number(priceInUsd.toFixed(4)),
         category_id: form.category_id || null,
         description: form.description,
         status: 'draft',
@@ -81,14 +85,23 @@ export default function VendorProducts() {
 
   if (!vendor) return <div className="p-8 text-gray-400">Loading...</div>;
 
+  // Lissafin live conversion don nuna wa vendor adadin Dala yayin da yake rubuta Naira
+  const estimatedUsd = form.price ? (Number(form.price) / 1320).toFixed(2) : '0.00';
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold mb-6">Manage Products</h1>
 
       <form onSubmit={handleCreate} className="card p-4 grid grid-cols-2 gap-3 mb-8">
         <input className="input col-span-2" placeholder="Product name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <input className="input" type="number" placeholder="Price (₦)" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-        <input className="input" type="number" placeholder="Stock quantity" required value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+        
+        <div className="col-span-1">
+          <input className="input w-full" type="number" placeholder="Price (₦)" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+          <p className="text-xs text-gray-400 mt-1">Est. ${estimatedUsd}</p>
+        </div>
+
+        <input className="input col-span-1" type="number" placeholder="Stock quantity" required value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+        
         <select className="input col-span-2" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
           <option value="">Select category</option>
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -112,27 +125,32 @@ export default function VendorProducts() {
       </form>
 
       <div className="space-y-2">
-        {products.map((p) => (
-          <div key={p.id} className="card p-3 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
-                {p.product_images?.[0]?.url && (
-                  <img src={p.product_images[0].url} alt={p.name} className="w-full h-full object-cover" />
-                )}
+        {products.map((p) => {
+          // Lura: Tunda a database an adana shi da Dala, a nan muna mayar da shi Naira ne domin vendor ya ga ainihin farashin Naira da ya sanya
+          const priceInNgnDisplay = Math.round(Number(p.price) * 1320);
+
+          return (
+            <div key={p.id} className="card p-3 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                  {p.product_images?.[0]?.url && (
+                    <img src={p.product_images[0].url} alt={p.name} className="w-full h-full object-cover" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-medium">{p.name}</p>
+                  <p className="text-xs text-gray-500">₦{priceInNgnDisplay.toLocaleString()} (${Number(p.price).toFixed(2)}) · {p.status}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">{p.name}</p>
-                <p className="text-xs text-gray-500">₦{Number(p.price).toLocaleString()} · {p.status}</p>
+              <div className="flex gap-2">
+                <button onClick={() => togglePublish(p)} className="btn-secondary text-xs">
+                  {p.status === 'published' ? 'Unpublish' : 'Publish'}
+                </button>
+                <button onClick={() => handleDelete(p.id)} className="text-red-500 text-xs">Delete</button>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => togglePublish(p)} className="btn-secondary text-xs">
-                {p.status === 'published' ? 'Unpublish' : 'Publish'}
-              </button>
-              <button onClick={() => handleDelete(p.id)} className="text-red-500 text-xs">Delete</button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
