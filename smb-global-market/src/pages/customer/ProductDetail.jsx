@@ -3,11 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import { getProductById } from '../../services/productService';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
+  const rate = useExchangeRate();
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState(null);
@@ -38,6 +40,8 @@ export default function ProductDetail() {
 
   const stock = product.inventory?.quantity ?? 0;
   const image = product.product_images?.[0]?.url;
+  const priceUsd = ngnToUsd(product.price, rate);
+  const priceNgn = Number(product.price || 0).toLocaleString();
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
@@ -48,9 +52,16 @@ export default function ProductDetail() {
         <Link to={`/categories?cat=${product.category?.id}`} className="text-sm text-brand-green">{product.category?.name}</Link>
         <h1 className="text-2xl font-bold mt-1">{product.name}</h1>
         <p className="text-sm text-gray-500 mt-1">Sold by {product.vendor?.business_name}</p>
-        <p className="text-2xl font-semibold text-brand-green mt-4">
-          {product.currency} {Number(product.price).toLocaleString()}
-        </p>
+        
+        <div className="mt-4">
+          <p className="text-2xl font-semibold text-brand-green">
+            ${priceUsd}
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Est. ₦{priceNgn}
+          </p>
+        </div>
+
         <p className="mt-4 text-gray-700 whitespace-pre-line">{product.description}</p>
 
         {stock <= 0 ? (
