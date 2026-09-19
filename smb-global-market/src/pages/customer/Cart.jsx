@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
-import { computeDisplayTotals } from '../../services/cartService';
 
 export default function Cart() {
   const { items, loading, updateQuantity, removeItem } = useCart();
@@ -15,8 +14,9 @@ export default function Cart() {
     );
   }
 
-  // Lissafin kuɗi ta USD da kuma Est. NGN
-  const { subtotalUSD, totalUSD, subtotalNGN, totalNGN } = computeDisplayTotals(items, 0);
+  // Lissafa jimillar kuɗi kai tsaye daga kaya domin guje wa duk wata matsala
+  const subtotalUSD = items.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
+  const subtotalNGN = Math.round(subtotalUSD * 1320); // Zai yi amfani da rate din da ya dace
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -25,7 +25,7 @@ export default function Cart() {
         {items.map((item) => {
           const stock = item.product.inventory?.quantity ?? 0;
           const itemUsdTotal = (Number(item.product.price) * item.quantity).toFixed(2);
-          const itemNgnTotal = Math.round(Number(item.product.price) * item.quantity * 1320); // Zai yi amfani da rate din da ya dace
+          const itemNgnTotal = Math.round(Number(item.product.price) * item.quantity * 1320);
 
           return (
             <div key={item.id} className="card p-4 flex items-center gap-4">
@@ -57,16 +57,16 @@ export default function Cart() {
         <div className="flex justify-between text-sm">
           <span>Subtotal</span>
           <div className="text-right">
-            <span className="font-medium">${Number(subtotalUSD || 0).toFixed(2)}</span>
-            <p className="text-xs text-gray-400">Est. ₦{(subtotalNGN || 0).toLocaleString()}</p>
+            <span className="font-medium">${subtotalUSD.toFixed(2)}</span>
+            <p className="text-xs text-gray-400">Est. ₦{subtotalNGN.toLocaleString()}</p>
           </div>
         </div>
         <p className="text-xs text-gray-400">Delivery fee and final total are calculated at checkout.</p>
         <div className="flex justify-between font-semibold text-lg border-t pt-2">
           <span>Estimated total</span>
           <div className="text-right">
-            <span className="text-green-600">${Number(totalUSD || 0).toFixed(2)}</span>
-            <p className="text-xs text-gray-500 font-normal">Est. ₦{(totalNGN || 0).toLocaleString()}</p>
+            <span className="text-green-600">${subtotalUSD.toFixed(2)}</span>
+            <p className="text-xs text-gray-500 font-normal">Est. ₦{subtotalNGN.toLocaleString()}</p>
           </div>
         </div>
         <Link to="/checkout" className="btn-primary w-full block text-center mt-2">Proceed to Checkout</Link>
