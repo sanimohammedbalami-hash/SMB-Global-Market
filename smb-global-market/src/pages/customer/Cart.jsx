@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
+import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
 
 export default function Cart() {
   const { items, loading, updateQuantity, removeItem } = useCart();
+  const rate = useExchangeRate();
 
   if (loading) return <div className="p-8 text-center text-gray-400">Loading cart...</div>;
   if (items.length === 0) {
@@ -14,9 +16,15 @@ export default function Cart() {
     );
   }
 
-  // Lissafa jimillar kuɗi kai tsaye daga kaya domin guje wa duk wata matsala
-  const subtotalUSD = items.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
-  const subtotalNGN = Math.round(subtotalUSD * 1320); // Zai yi amfani da rate din da ya dace
+  // Lissafa jimillar kuɗi kai tsaye daga ainihin farashin kowane kaya a Cart ta amfani da rate din Dala
+  const subtotalUSD = items.reduce((sum, item) => {
+    const itemUsd = Number(ngnToUsd(item.product.price, rate));
+    return sum + (itemUsd * item.quantity);
+  }, 0);
+
+  const subtotalNGN = items.reduce((sum, item) => {
+    return sum + (Number(item.product.price) * item.quantity);
+  }, 0);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -24,8 +32,9 @@ export default function Cart() {
       <div className="space-y-4">
         {items.map((item) => {
           const stock = item.product.inventory?.quantity ?? 0;
-          const itemUsdTotal = (Number(item.product.price) * item.quantity).toFixed(2);
-          const itemNgnTotal = Math.round(Number(item.product.price) * item.quantity * 1320);
+          const itemUsdPrice = Number(ngnToUsd(item.product.price, rate));
+          const itemUsdTotal = (itemUsdPrice * item.quantity).toFixed(2);
+          const itemNgnTotal = Number(item.product.price) * item.quantity;
 
           return (
             <div key={item.id} className="card p-4 flex items-center gap-4">
