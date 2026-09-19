@@ -44,17 +44,24 @@ export default function AdminProducts() {
 
       <input className="input mb-4 max-w-sm" placeholder="Search products..." value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="space-y-2">
-        {filtered.map((p) => (
-          <div key={p.id} className="card p-3 flex justify-between items-center">
-            <div>
-              <p className="font-medium">{p.name}</p>
-              <p className="text-sm text-gray-500">{p.vendor?.business_name} · ₦{Number(p.price).toLocaleString()} · {p.status}</p>
+        {filtered.map((p) => {
+          const priceUsd = Number(p.price || 0).toFixed(2);
+          const priceNgn = Math.round(Number(p.price || 0) * 1320);
+
+          return (
+            <div key={p.id} className="card p-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium">{p.name}</p>
+                <p className="text-sm text-gray-500">
+                  {p.vendor?.business_name} · <span className="text-gray-900 font-medium">${priceUsd}</span> <span className="text-xs text-gray-400">(Est. ₦{priceNgn.toLocaleString()})</span> · {p.status}
+                </p>
+              </div>
+              {p.status !== 'disabled' && (
+                <button onClick={() => disable(p.id)} className="text-red-500 text-xs">Disable</button>
+              )}
             </div>
-            {p.status !== 'disabled' && (
-              <button onClick={() => disable(p.id)} className="text-red-500 text-xs">Disable</button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
