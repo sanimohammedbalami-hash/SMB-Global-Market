@@ -19,16 +19,19 @@ export default function ProductCard({ product }) {
         <p className="text-sm text-gray-500 truncate">{product.vendor?.business_name}</p>
         <h3 className="font-medium text-brand-navy truncate">{product.name}</h3>
         <div className="mt-1">
-          <span className="font-semibold text-brand-green">
+          <span className="font-semibold text-brand-green text-base block">
             ${ngnToUsd(product.price, rate)}
           </span>
+          <span className="text-xs text-gray-400 block">
+            Est. ₦{Number(product.price).toLocaleString()}
+          </span>
           {product.compare_at_price && (
-            <span className="text-xs text-gray-400 line-through ml-2">
+            <span className="text-xs text-gray-400 line-through block">
               ${ngnToUsd(product.compare_at_price, rate)}
             </span>
-      <p className="text-xs text-gray-600 font-medium mt-0.5">Est. ₦{Number(product.price).toLocaleString()}</p>
           )}
-        {outOfStock && <span className="text-xs text-red-500">Out of stock</span>}
+        </div>
+        {outOfStock && <span className="text-xs text-red-500 mt-1 block">Out of stock</span>}
       </div>
     </Link>
   );
