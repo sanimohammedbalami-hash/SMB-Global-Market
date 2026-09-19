@@ -160,7 +160,7 @@ export default function App() {
           <Route path="/vendor/dashboard" element={<VendorDashboard />} />
           <Route path="/vendor/products" element={<VendorProducts />} />
           <Route path="/vendor/orders" element={<VendorOrders />} />
-          <Route path="/vendor/earnings" element={<VendorEarnings />}
+          <Route path="/vendor/earnings" element={<VendorEarnings />} />
           <Route path="/vendor/profile" element={<VendorProfile />} />
         </Route>
 
