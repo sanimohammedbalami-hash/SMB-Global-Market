@@ -15,7 +15,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "lucide-react": "^0.400.0",
-    "react-paystack": "^6.0.4"
+    "react-paystack": "6.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
