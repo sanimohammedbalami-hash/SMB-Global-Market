@@ -66,13 +66,21 @@ export default function Checkout() {
 
       <div className="card p-4 mt-6">
         <h2 className="font-medium mb-2">Order Summary</h2>
-        {items.map((i) => (
-          <div key={i.id} className="flex justify-between text-sm py-1">
-            <span>{i.product.name} × {i.quantity}</span>
-            <span>₦{(i.product.price * i.quantity).toLocaleString()}</span>
-          </div>
-        ))}
-        <p className="text-xs text-gray-400 mt-2">Final total (including delivery and any fees) is verified by the server before payment is created.</p>
+        {items.map((i) => {
+          const itemUsdTotal = (Number(i.product.price) * i.quantity).toFixed(2);
+          const itemNgnTotal = Math.round(Number(i.product.price) * i.quantity * 1320);
+
+          return (
+            <div key={i.id} className="flex justify-between items-center text-sm py-2 border-b border-gray-100 last:border-none">
+              <span>{i.product.name} × {i.quantity}</span>
+              <div className="text-right">
+                <span className="font-medium">${itemUsdTotal}</span>
+                <p className="text-xs text-gray-400">Est. ₦{itemNgnTotal.toLocaleString()}</p>
+              </div>
+            </div>
+          );
+        })}
+        <p className="text-xs text-gray-400 mt-3">Final total (including delivery and any fees) is verified by the server before payment is created.</p>
       </div>
 
       {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
