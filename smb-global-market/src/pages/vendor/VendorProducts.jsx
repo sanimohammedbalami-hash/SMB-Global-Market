@@ -4,7 +4,7 @@ import { getVendorByProfileId } from '../../services/vendorService';
 import { getVendorProducts, createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { getCategories } from '../../services/productService';
 import { supabase } from '../../lib/supabaseClient';
-import { useExchangeRate, ngnToUsd, usdToNgn } from '../../hooks/useExchangeRate';
+import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function VendorProducts() {
   const { profile } = useAuth();
@@ -47,13 +47,13 @@ export default function VendorProducts() {
     setError(null);
     setUploading(true);
     try {
-      // Mayar da farashin Naira da vendor ya shigar zuwa USD ta amfani da ainihin exchange rate
+      // Canza Naira zuwa USD kai tsaye ta hanyar raba farashin da rate
       const priceInNgn = Number(form.price);
-      const priceInUsd = ngnToUsd(priceInNgn, rate);
+      const priceInUsd = rate > 0 ? priceInNgn / rate : priceInNgn / 1320;
 
       const created = await createProduct(vendor.id, {
         name: form.name,
-        price: Number(priceInUsd),
+        price: Number(priceInUsd.toFixed(4)),
         category_id: form.category_id || null,
         description: form.description,
         status: 'draft',
@@ -88,7 +88,7 @@ export default function VendorProducts() {
   if (!vendor) return <div className="p-8 text-gray-400">Loading...</div>;
 
   // Lissafin live conversion don nuna wa vendor adadin Dala yayin da yake rubuta Naira
-  const estimatedUsd = form.price ? ngnToUsd(form.price, rate) : '0.00';
+  const estimatedUsd = form.price && rate > 0 ? (Number(form.price) / rate).toFixed(2) : '0.00';
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -128,7 +128,6 @@ export default function VendorProducts() {
 
       <div className="space-y-2">
         {products.map((p) => {
-          // Mayar da farashin Dala da ke database zuwa Naira domin mai siyarwa ya gani a cikin Naira
           const priceInNgnDisplay = usdToNgn(p.price, rate);
           const priceUsdDisplay = Number(p.price || 0).toFixed(2);
 
