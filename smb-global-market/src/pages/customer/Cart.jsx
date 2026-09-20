@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
-import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
+import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function Cart() {
   const { items, loading, updateQuantity, removeItem } = useCart();
@@ -16,14 +16,14 @@ export default function Cart() {
     );
   }
 
-  // Lissafa jimillar kuɗi kai tsaye daga ainihin farashin kowane kaya a Cart ta amfani da rate din Dala
-  const subtotalUSD = items.reduce((sum, item) => {
-    const itemUsd = Number(ngnToUsd(item.product.price, rate));
-    return sum + (itemUsd * item.quantity);
+  // Lissafa jimillar kuɗi daga Dala zuwa Naira da kuma riƙe Dala a matsayin ƙarin bayani
+  const subtotalNgn = items.reduce((sum, item) => {
+    const itemNgn = Number(usdToNgn(item.product.price, rate));
+    return sum + (itemNgn * item.quantity);
   }, 0);
 
-  const subtotalNGN = items.reduce((sum, item) => {
-    return sum + (Number(item.product.price) * item.quantity);
+  const subtotalUsd = items.reduce((sum, item) => {
+    return sum + (Number(item.product.price || 0) * item.quantity);
   }, 0);
 
   return (
@@ -32,9 +32,9 @@ export default function Cart() {
       <div className="space-y-4">
         {items.map((item) => {
           const stock = item.product.inventory?.quantity ?? 0;
-          const itemUsdPrice = Number(ngnToUsd(item.product.price, rate));
-          const itemUsdTotal = (itemUsdPrice * item.quantity).toFixed(2);
-          const itemNgnTotal = Number(item.product.price) * item.quantity;
+          const itemNgnPrice = Number(usdToNgn(item.product.price, rate));
+          const itemNgnTotal = (itemNgnPrice * item.quantity).toLocaleString();
+          const itemUsdTotal = (Number(item.product.price || 0) * item.quantity).toFixed(2);
 
           return (
             <div key={item.id} className="card p-4 flex items-center gap-4">
@@ -53,8 +53,8 @@ export default function Cart() {
                 className="input w-16"
               />
               <div className="w-32 text-right font-medium">
-                <p className="text-gray-900">${itemUsdTotal}</p>
-                <p className="text-xs text-gray-500">Est. ₦{itemNgnTotal.toLocaleString()}</p>
+                <p className="text-gray-900">₦{itemNgnTotal}</p>
+                <p className="text-xs text-gray-500">Est. ${itemUsdTotal} USD</p>
               </div>
               <button onClick={() => removeItem(item.id)} className="text-red-500 text-sm">Remove</button>
             </div>
@@ -66,16 +66,16 @@ export default function Cart() {
         <div className="flex justify-between text-sm">
           <span>Subtotal</span>
           <div className="text-right">
-            <span className="font-medium">${subtotalUSD.toFixed(2)}</span>
-            <p className="text-xs text-gray-400">Est. ₦{subtotalNGN.toLocaleString()}</p>
+            <span className="font-medium">₦{subtotalNgn.toLocaleString()}</span>
+            <p className="text-xs text-gray-400">Est. ${subtotalUsd.toFixed(2)} USD</p>
           </div>
         </div>
         <p className="text-xs text-gray-400">Delivery fee and final total are calculated at checkout.</p>
         <div className="flex justify-between font-semibold text-lg border-t pt-2">
           <span>Estimated total</span>
           <div className="text-right">
-            <span className="text-green-600">${subtotalUSD.toFixed(2)}</span>
-            <p className="text-xs text-gray-500 font-normal">Est. ₦{subtotalNGN.toLocaleString()}</p>
+            <span className="text-green-600">₦{subtotalNgn.toLocaleString()}</span>
+            <p className="text-xs text-gray-500 font-normal">Est. ${subtotalUsd.toFixed(2)} USD</p>
           </div>
         </div>
         <Link to="/checkout" className="btn-primary w-full block text-center mt-2">Proceed to Checkout</Link>
