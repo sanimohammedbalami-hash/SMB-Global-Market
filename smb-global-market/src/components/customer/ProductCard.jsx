@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
+import { useExchangeRate, NgnTousd } from '../../hooks/useExchangeRate';
 
 export default function ProductCard({ product }) {
   const rate = useExchangeRate();
