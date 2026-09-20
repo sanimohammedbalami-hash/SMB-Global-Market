@@ -6,10 +6,11 @@ export default function ProductCard({ product }) {
   const image = product.product_images?.sort((a, b) => a.sort_order - b.sort_order)[0]?.url;
   const outOfStock = (product.inventory?.quantity ?? 0) <= 0;
 
-  // Lissafin farashi daga USD zuwa NGN ta amfani da usdToNgn
-  const priceNgn = usdToNgn(product.price, rate);
+  // Tsara farashi a Dala ($) a matsayin babban kuɗi da Naira (₦) a matsayin kiyasi
   const priceUsd = Number(product.price || 0).toFixed(2);
-  const comparePriceNgn = product.compare_at_price ? usdToNgn(product.compare_at_price, rate) : null;
+  const priceNgn = usdToNgn(product.price, rate);
+
+  const comparePriceUsd = product.compare_at_price ? Number(product.compare_at_price).toFixed(2) : null;
 
   return (
     <Link to={`/product/${product.id}`} className="card overflow-hidden hover:shadow-md transition block">
@@ -24,15 +25,18 @@ export default function ProductCard({ product }) {
         <p className="text-sm text-gray-500 truncate">{product.vendor?.business_name}</p>
         <h3 className="font-medium text-brand-navy truncate">{product.name}</h3>
         <div className="mt-1">
+          {/* Babban Farashi a Dala */}
           <span className="font-semibold text-brand-green text-base block">
-            ₦{priceNgn}
+            ${priceUsd} USD
           </span>
-          <span className="text-xs text-gray-400 block">
-            Est. ${priceUsd} USD
+          {/* Kiyasin Farashi a Naira */}
+          <span className="text-xs text-gray-500 block">
+            Est. ₦{priceNgn}
           </span>
-          {product.compare_at_price && (
+          {/* Tsohon Farashi/Ragi a Dala */}
+          {comparePriceUsd && (
             <span className="text-xs text-gray-400 line-through block">
-              ₦{comparePriceNgn}
+              ${comparePriceUsd} USD
             </span>
           )}
         </div>
