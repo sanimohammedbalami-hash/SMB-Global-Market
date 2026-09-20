@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Search, Truck, RotateCcw, Shield } from 'lucide-react';
 import { getFeaturedProducts } from '../../services/productService';
+import { supabase } from '../../lib/supabaseClient';
 import ProductCard from '../../components/customer/ProductCard';
 import BottomNav from '../../components/common/BottomNav';
 
@@ -8,13 +9,24 @@ const CATEGORIES = ['All', 'Electronics', 'Shadda', 'Atamfa/Lace', 'Shoes', 'Wat
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [offerProducts, setOfferProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
+    // Jawo duk kayayyaki
     getFeaturedProducts(50)
       .then(setProducts)
       .finally(() => setLoading(false));
+
+    // Jawo kayan Offer Deals kawai daga Supabase
+    supabase
+      .from('products')
+      .select('*')
+      .eq('is_offer', true)
+      .then(({ data }) => {
+        if (data) setOfferProducts(data);
+      });
   }, []);
 
   const filteredProducts =
@@ -68,15 +80,13 @@ export default function Home() {
         <div className="mt-2 px-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-sm font-semibold text-brand-navy">🔥 Offer Deals</h2>
-            {!loading && products.length === 0 && (
-              <span className="text-xs text-gray-400">No published products yet.</span>
+            {offerProducts.length === 0 && (
+              <span className="text-xs text-gray-400">No offer products yet.</span>
             )}
           </div>
-          {loading ? (
-            <p className="text-gray-400 text-sm">Loading...</p>
-          ) : products.length === 0 ? null : (
+          {offerProducts.length > 0 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {products.slice(0, 6).map((p) => (
+              {offerProducts.map((p) => (
                 <div key={p.id} className="min-w-[130px]">
                   <ProductCard product={p} />
                 </div>
