@@ -4,9 +4,11 @@ import { getVendorByProfileId } from '../../services/vendorService';
 import { getVendorProducts, createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { getCategories } from '../../services/productService';
 import { supabase } from '../../lib/supabaseClient';
+import { useExchangeRate, ngnToUsd, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function VendorProducts() {
   const { profile } = useAuth();
+  const rate = useExchangeRate();
   const [vendor, setVendor] = useState(null);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -45,13 +47,13 @@ export default function VendorProducts() {
     setError(null);
     setUploading(true);
     try {
-      // Mun raba farashin da Naira da aka saka da 1320 domin ya zama USD a Supabase database
+      // Mayar da farashin Naira da vendor ya shigar zuwa USD ta amfani da ainihin exchange rate
       const priceInNgn = Number(form.price);
-      const priceInUsd = priceInNgn / 1320;
+      const priceInUsd = ngnToUsd(priceInNgn, rate);
 
       const created = await createProduct(vendor.id, {
         name: form.name,
-        price: Number(priceInUsd.toFixed(4)),
+        price: Number(priceInUsd),
         category_id: form.category_id || null,
         description: form.description,
         status: 'draft',
@@ -86,7 +88,7 @@ export default function VendorProducts() {
   if (!vendor) return <div className="p-8 text-gray-400">Loading...</div>;
 
   // Lissafin live conversion don nuna wa vendor adadin Dala yayin da yake rubuta Naira
-  const estimatedUsd = form.price ? (Number(form.price) / 1320).toFixed(2) : '0.00';
+  const estimatedUsd = form.price ? ngnToUsd(form.price, rate) : '0.00';
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -97,7 +99,7 @@ export default function VendorProducts() {
         
         <div className="col-span-1">
           <input className="input w-full" type="number" placeholder="Price (₦)" required value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-          <p className="text-xs text-gray-400 mt-1">Est. ${estimatedUsd}</p>
+          <p className="text-xs text-gray-400 mt-1">Est. ${estimatedUsd} USD</p>
         </div>
 
         <input className="input col-span-1" type="number" placeholder="Stock quantity" required value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
@@ -126,8 +128,9 @@ export default function VendorProducts() {
 
       <div className="space-y-2">
         {products.map((p) => {
-          // Lura: Tunda a database an adana shi da Dala, a nan muna mayar da shi Naira ne domin vendor ya ga ainihin farashin Naira da ya sanya
-          const priceInNgnDisplay = Math.round(Number(p.price) * 1320);
+          // Mayar da farashin Dala da ke database zuwa Naira domin mai siyarwa ya gani a cikin Naira
+          const priceInNgnDisplay = usdToNgn(p.price, rate);
+          const priceUsdDisplay = Number(p.price || 0).toFixed(2);
 
           return (
             <div key={p.id} className="card p-3 flex justify-between items-center">
@@ -139,7 +142,7 @@ export default function VendorProducts() {
                 </div>
                 <div>
                   <p className="font-medium">{p.name}</p>
-                  <p className="text-xs text-gray-500">₦{priceInNgnDisplay.toLocaleString()} (${Number(p.price).toFixed(2)}) · {p.status}</p>
+                  <p className="text-xs text-gray-500">${priceUsdDisplay} USD (Est. ₦{priceInNgnDisplay}) · {p.status}</p>
                 </div>
               </div>
               <div className="flex gap-2">
