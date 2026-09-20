@@ -41,9 +41,9 @@ export default function ProductDetail() {
   const stock = product.inventory?.quantity ?? 0;
   const image = product.product_images?.[0]?.url;
   
-  // Gyara anan: Lissafin farashi daga Dala zuwa Naira da kuma nuna Dala a matsayin ƙarin bayani
-  const priceNgn = usdToNgn(product.price, rate);
+  // Maida Dala ($) matsayin Babban Farashi da Naira (₦) matsayin Kiyasi
   const priceUsd = Number(product.price || 0).toFixed(2);
+  const priceNgn = usdToNgn(product.price, rate);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
@@ -56,11 +56,13 @@ export default function ProductDetail() {
         <p className="text-sm text-gray-500 mt-1">Sold by {product.vendor?.business_name}</p>
         
         <div className="mt-4">
+          {/* Babban Farashi a Dala */}
           <p className="text-2xl font-semibold text-brand-green">
-            ₦{priceNgn}
+            ${priceUsd} USD
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Est. ${priceUsd} USD
+          {/* Kiyasin Farashi a Naira */}
+          <p className="text-sm text-gray-500 mt-0.5">
+            Est. ₦{priceNgn}
           </p>
         </div>
 
