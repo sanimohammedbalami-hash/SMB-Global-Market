@@ -24,6 +24,7 @@ export function useExchangeRate() {
   return rate;
 }
 
-export function ngnToUsd(ngnAmount, rate) {
-  return (Number(ngnAmount) / rate).toFixed(2);
-  }
+// Wannan yana canza farashi daga Dala (USD) zuwa Naira (NGN) ta hanyar ninkawa
+export function usdToNgn(usdAmount, rate) {
+  return (Number(usdAmount) * (rate || 1325)).toFixed(2);
+}
