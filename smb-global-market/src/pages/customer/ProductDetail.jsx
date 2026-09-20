@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getProductById } from '../../services/productService';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
+import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -40,8 +40,10 @@ export default function ProductDetail() {
 
   const stock = product.inventory?.quantity ?? 0;
   const image = product.product_images?.[0]?.url;
-  const priceUsd = ngnToUsd(product.price, rate);
-  const priceNgn = Number(product.price || 0).toLocaleString();
+  
+  // Gyara anan: Lissafin farashi daga Dala zuwa Naira da kuma nuna Dala a matsayin ƙarin bayani
+  const priceNgn = usdToNgn(product.price, rate);
+  const priceUsd = Number(product.price || 0).toFixed(2);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
@@ -55,10 +57,10 @@ export default function ProductDetail() {
         
         <div className="mt-4">
           <p className="text-2xl font-semibold text-brand-green">
-            ${priceUsd}
+            ₦{priceNgn}
           </p>
           <p className="text-xs text-gray-400 mt-0.5">
-            Est. ₦{priceNgn}
+            Est. ${priceUsd} USD
           </p>
         </div>
 
