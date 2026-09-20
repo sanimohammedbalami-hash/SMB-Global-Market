@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useExchangeRate, ngnToUsd } from '../../hooks/useExchangeRate';
+import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function ProductCard({ product }) {
   const rate = useExchangeRate();
   const image = product.product_images?.sort((a, b) => a.sort_order - b.sort_order)[0]?.url;
   const outOfStock = (product.inventory?.quantity ?? 0) <= 0;
+
+  // Lissafin farashi daga USD zuwa NGN, da kuma riƙe USD a matsayin tushe
+  const priceNgn = usdToNgn(product.price, rate);
+  const priceUsd = Number(product.price || 0).toFixed(2);
+  const comparePriceUsd = product.compare_at_price ? usdToNgn(product.compare_at_price, rate) : null;
 
   return (
     <Link to={`/product/${product.id}`} className="card overflow-hidden hover:shadow-md transition block">
@@ -20,14 +25,14 @@ export default function ProductCard({ product }) {
         <h3 className="font-medium text-brand-navy truncate">{product.name}</h3>
         <div className="mt-1">
           <span className="font-semibold text-brand-green text-base block">
-            ${ngnToUsd(product.price, rate)}
+            ₦{priceNgn}
           </span>
           <span className="text-xs text-gray-400 block">
-            Est. ₦{Number(product.price).toLocaleString()}
+            Est. ${priceUsd} USD
           </span>
           {product.compare_at_price && (
             <span className="text-xs text-gray-400 line-through block">
-              ${ngnToUsd(product.compare_at_price, rate)}
+              ₦{comparePriceUsd}
             </span>
           )}
         </div>
