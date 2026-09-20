@@ -3,10 +3,12 @@ import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { initializeCheckout } from '../../services/paymentService';
+import { useExchangeRate, usdToNgn } from '../../hooks/useExchangeRate';
 
 export default function Checkout() {
   const { profile } = useAuth();
   const { items } = useCart();
+  const rate = useExchangeRate();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [newAddress, setNewAddress] = useState(null);
@@ -67,14 +69,15 @@ export default function Checkout() {
       <div className="card p-4 mt-6">
         <h2 className="font-medium mb-2">Order Summary</h2>
         {items.map((i) => {
-          const itemUsdTotal = (Number(i.product.price) * i.quantity).toFixed(2);
-          const itemNgnTotal = Math.round(Number(i.product.price) * i.quantity * 1320);
+          const itemUsdTotal = (Number(i.product.price || 0) * i.quantity).toFixed(2);
+          const itemNgnPrice = Number(usdToNgn(i.product.price, rate));
+          const itemNgnTotal = itemNgnPrice * i.quantity;
 
           return (
             <div key={i.id} className="flex justify-between items-center text-sm py-2 border-b border-gray-100 last:border-none">
               <span>{i.product.name} × {i.quantity}</span>
               <div className="text-right">
-                <span className="font-medium">${itemUsdTotal}</span>
+                <span className="font-medium">${itemUsdTotal} USD</span>
                 <p className="text-xs text-gray-400">Est. ₦{itemNgnTotal.toLocaleString()}</p>
               </div>
             </div>
